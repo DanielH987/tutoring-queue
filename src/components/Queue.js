@@ -7,7 +7,12 @@ function Queue() {
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
   
-  // Course options managed with state
+  // Validation states
+  const [nameError, setNameError] = useState(false);
+  const [courseError, setCourseError] = useState(false);
+  const [questionError, setQuestionError] = useState(false);
+
+  // Course options
   const [courses] = useState([
     { value: 'POSC 202', label: 'POSC 202' },
     { value: 'POSC 301', label: 'POSC 301' },
@@ -17,11 +22,30 @@ function Queue() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newStudent = { name, course, question };
-    setQueue([...queue, newStudent]);
-    setName('');
-    setCourse('');
-    setQuestion('');
+
+    // Reset error states
+    setNameError(false);
+    setCourseError(false);
+    setQuestionError(false);
+
+    // Validation checks
+    if (name === '') {
+      setNameError(true);
+    }
+    if (course === '') {
+      setCourseError(true);
+    }
+    if (question === '') {
+      setQuestionError(true);
+    }
+
+    if (name && course && question) {
+      const newStudent = { name, course, question };
+      setQueue([...queue, newStudent]);
+      setName('');
+      setCourse('');
+      setQuestion('');
+    }
   };
 
   return (
@@ -38,8 +62,10 @@ function Queue() {
               id="name" 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
-              required 
+              className={nameError ? 'input-error' : ''}
+              // required 
             />
+            {nameError && <p className="error-message">This field is required</p>}
           </div>
           <div className="form-group">
             <label htmlFor="course">Course:</label>
@@ -47,7 +73,8 @@ function Queue() {
               id="course" 
               value={course} 
               onChange={(e) => setCourse(e.target.value)} 
-              required
+              className={courseError ? 'input-error' : ''}
+              // required
             >
               <option value="" disabled></option>
               {courses.map((courseOption) => (
@@ -56,6 +83,7 @@ function Queue() {
                 </option>
               ))}
             </select>
+            {courseError && <p className="error-message">This field is required</p>}
           </div>
           <div className="form-group">
             <label htmlFor="question">Question:</label>
@@ -63,8 +91,10 @@ function Queue() {
               id="question" 
               value={question} 
               onChange={(e) => setQuestion(e.target.value)} 
-              required 
+              className={questionError ? 'input-error' : ''}
+              // required 
             />
+            {questionError && <p className="error-message">This field is required</p>}
           </div>
           <button type="submit">Request Help</button>
         </form>
