@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/Header.css';  // Import the styles for Header component
 
 function Header() {
   return (
-    <header style={headerStyle}>
+    <header className="header">
       <nav>
-        <ul style={navListStyle}>
+        <ul className="nav-list">
           <li><Link to="/">Home</Link></li>
           <li><Link to="/add">Add to Queue</Link></li>
           <li><Link to="/tutor">Tutor Dashboard</Link></li>
@@ -15,19 +16,5 @@ function Header() {
     </header>
   );
 }
-
-const headerStyle = {
-  backgroundColor: '#282c34',
-  padding: '10px 20px',
-  color: 'white',
-};
-
-const navListStyle = {
-  listStyleType: 'none',
-  display: 'flex',
-  justifyContent: 'space-around',
-  margin: '0',
-  padding: '0',
-};
 
 export default Header;
