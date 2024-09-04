@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/Footer.css';
 
 function Footer() {
   return (
-    <footer style={footerStyle}>
-      <p>&copy; 2024 Tutoring Queue App</p>
+    <footer className="footer">
+      <p>&copy; 2024 Daniel Hootini</p>
       <nav>
-        <ul style={footerNavListStyle}>
+        <ul className="footer-nav-list">
           <li><Link to="/about">About</Link></li>
           <li><Link to="/privacy">Privacy</Link></li>
         </ul>
@@ -14,21 +15,5 @@ function Footer() {
     </footer>
   );
 }
-
-const footerStyle = {
-  backgroundColor: '#282c34',
-  padding: '10px 20px',
-  color: 'white',
-  textAlign: 'center',
-  position: 'fixed',
-  bottom: '0',
-  width: '100%',
-};
-
-const footerNavListStyle = {
-  listStyleType: 'none',
-  display: 'inline',
-  margin: '0 10px',
-};
 
 export default Footer;
