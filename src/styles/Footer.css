@@ -1,30 +1,29 @@
 .footer {
-  background-color: #9E1B34;
-  padding: 20px;
+  background-color: #9e1b34;
+  padding: 10px 20px;
   color: white;
   text-align: center;
   position: fixed;
   bottom: 0;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; /* Flexbox to align items */
+  justify-content: center; /* Center all elements horizontally */
+  align-items: center; /* Vertically center the items */
 }
 
-.footer p,
-.footer-nav-list {
-  margin: 0;
-  display: inline-block;
+.footer p {
+  margin-right: 10px; /* Adjust the margin between the text and the links */
 }
 
 .footer-nav-list {
   list-style-type: none;
-  display: flex;
-  margin-left: 15px;
+  display: flex; /* Display the list items in a row */
+  margin: 0;
+  padding: 0;
 }
 
 .footer-nav-list li {
-  margin: 0 10px;
+  margin: 0 10px; /* Set equal margin between the links */
 }
 
 .footer a {
