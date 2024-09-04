@@ -53,14 +53,6 @@ function Queue() {
         </div>
         <button type="submit">Request Help</button>
       </form>
-
-      <ul className="queue-list">
-        {queue.map((student, index) => (
-          <li key={index} className="queue-item">
-            <strong>{student.name}</strong> - {student.course} - {student.question}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
