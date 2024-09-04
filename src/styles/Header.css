@@ -1,23 +1,38 @@
 .header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   background-color: #9E1B34;
-  padding: 20px; /* Increase padding to make the header bigger */
-  color: white; /* Set text color to white */
+  padding: 10px 20px;
+  color: white;
+}
+
+.header-title {
+  margin-right: 50px;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .nav-list {
-  list-style-type: none;
   display: flex;
-  justify-content: space-around;
+  list-style: none;
   margin: 0;
   padding: 0;
 }
 
+.nav-list li {
+  margin: 0 10px;
+}
+
 .nav-list li a {
-  color: white; /* Ensure that link text is also white */
-  text-decoration: none; /* Remove underline from links */
-  font-size: 1.2rem; /* Increase font size for links */
+  color: white;
+  text-decoration: none;
 }
 
 .nav-list li a:hover {
-  text-decoration: underline; /* Add underline on hover for better UX */
+  color: lightgray;
+}
+
+.nav-list li a.active {
+  font-weight: bold;
 }
