@@ -16,7 +16,9 @@ function Header() {
 
   return (
     <header className="header">
-      <h1 className="header-title">POSC Tutoring Queue</h1>
+      <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <h1 className="header-title">POSC Tutoring Queue</h1>
+      </Link>
       <nav>
         <ul className="nav-list">
           <li>
