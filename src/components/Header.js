@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/Header.css';
 
 function Header() {
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
+
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, [location]);
 
   const handleClick = (path) => {
     setActiveLink(path);
@@ -21,34 +25,16 @@ function Header() {
               className={activeLink === "/" ? "active" : ""}
               onClick={() => handleClick("/")}
             >
-              Home
+              Request Help
             </Link>
           </li>
           <li>
             <Link
-              to="/add"
-              className={activeLink === "/add" ? "active" : ""}
-              onClick={() => handleClick("/add")}
+              to="/instructions"
+              className={activeLink === "/instructions" ? "active" : ""}
+              onClick={() => handleClick("/instructions")}
             >
-              Add to Queue
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/tutor"
-              className={activeLink === "/tutor" ? "active" : ""}
-              onClick={() => handleClick("/tutor")}
-            >
-              Tutor Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/student"
-              className={activeLink === "/student" ? "active" : ""}
-              onClick={() => handleClick("/student")}
-            >
-              Student View
+              Instructions
             </Link>
           </li>
         </ul>
