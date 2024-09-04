@@ -38,17 +38,20 @@
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 75%;
   padding: 0.75rem;
   border: 1px solid #e1e1e1;
   border-radius: 4px;
   font-size: 1rem;
   background-color: #f3f4f6;
+  box-sizing: border-box;
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   background-color: #ffffff;
   outline: none;
   border-color: black;

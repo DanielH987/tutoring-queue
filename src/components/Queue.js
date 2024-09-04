@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../styles/Queue.css';
 
 function Queue() {
@@ -6,6 +6,14 @@ function Queue() {
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
+  
+  // Course options managed with state
+  const [courses] = useState([
+    { value: 'POSC 202', label: 'POSC 202' },
+    { value: 'POSC 301', label: 'POSC 301' },
+    { value: 'POSC 371', label: 'POSC 371' },
+    { value: 'POSC 401', label: 'POSC 401' }
+  ]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,13 +43,19 @@ function Queue() {
           </div>
           <div className="form-group">
             <label htmlFor="course">Course:</label>
-            <input 
-              type="text" 
+            <select 
               id="course" 
               value={course} 
               onChange={(e) => setCourse(e.target.value)} 
-              required 
-            />
+              required
+            >
+              <option value="" disabled></option>
+              {courses.map((courseOption) => (
+                <option key={courseOption.value} value={courseOption.value}>
+                  {courseOption.label}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-group">
             <label htmlFor="question">Question:</label>
