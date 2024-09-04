@@ -107,6 +107,7 @@ function Privacy() {
 
 const contentStyle = {
   padding: '20px',
+  paddingBottom: '60px', 
   textAlign: 'left',
   margin: '0 auto',
   maxWidth: '1000px',
