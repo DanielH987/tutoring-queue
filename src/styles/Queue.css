@@ -1,3 +1,19 @@
+.error-message {
+  color: #b21f25;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.input-error {
+  border: 2px solid #b21f25;
+  background-color: #fce9e9;
+}
+
+.input-error:focus {
+  border-color: #b21f25;
+  background-color: #ffffff;
+}
+
 .queue-container {
   padding: 20px;
   padding-bottom: 100px;
