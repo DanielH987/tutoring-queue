@@ -8,6 +8,7 @@ import TutorDashboard from './components/TutorDashboard';
 import StudentView from './components/StudentView';
 import About from './components/About';
 import Privacy from './components/Privacy';
+import Instructions from './components/Instructions';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/student" element={<StudentView />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/instructions" element={<Instructions />} />
             <Route path="*" element={<h1>Page Not Found</h1>} />
           </Routes>
         </main>

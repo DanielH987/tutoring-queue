@@ -13,7 +13,7 @@ const contentStyle = {
   padding: '20px',
   textAlign: 'left',
   margin: '0 auto',
-  maxWidth: '1000px',
+  maxWidth: '1500px',
 };
 
 export default About;
