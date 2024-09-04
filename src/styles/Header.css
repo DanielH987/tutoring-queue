@@ -1,6 +1,6 @@
 .header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   background-color: #9E1B34;
   padding: 10px 20px;
@@ -8,9 +8,14 @@
 }
 
 .header-title {
-  margin-right: 50px;
   font-size: 24px;
   font-weight: bold;
+  margin-right: 20px;
+}
+
+.nav-and-title {
+  display: flex;
+  align-items: center;
 }
 
 .nav-list {
@@ -35,4 +40,37 @@
 
 .nav-list li a.active {
   font-weight: bold;
+}
+
+.profile-icon {
+  cursor: pointer;
+  position: relative;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 40px; 
+  right: 10px;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 1000;
+}
+
+.profile-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-dropdown li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.profile-dropdown li:hover {
+  background-color: #f0f0f0;
 }
