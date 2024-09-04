@@ -45,6 +45,11 @@
 .profile-icon {
   cursor: pointer;
   position: relative;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.profile-icon:hover {
+  color: lightgray;
 }
 
 .profile-dropdown {
