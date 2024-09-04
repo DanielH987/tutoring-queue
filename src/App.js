@@ -11,18 +11,20 @@ import Privacy from './components/Privacy';
 
 function App() {
   return (
-    <Router> {/* Ensure the entire app is wrapped in Router */}
+    <Router>
       <div className="App">
         <Header />
-        <Routes>
-          <Route path="/" element={<Queue />} />
-          <Route path="/add" element={<AddToQueue />} />
-          <Route path="/tutor" element={<TutorDashboard />} />
-          <Route path="/student" element={<StudentView />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="*" element={<h1>Page Not Found</h1>} /> {/* Fallback route */}
-        </Routes>
+        <main>
+          <Routes>
+            <Route path="/" element={<Queue />} />
+            <Route path="/add" element={<AddToQueue />} />
+            <Route path="/tutor" element={<TutorDashboard />} />
+            <Route path="/student" element={<StudentView />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="*" element={<h1>Page Not Found</h1>} />
+          </Routes>
+        </main>
         <Footer />
       </div>
     </Router>
