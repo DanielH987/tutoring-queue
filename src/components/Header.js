@@ -12,7 +12,7 @@ function Header() {
 
   return (
     <header className="header">
-      <h1 className="header-title">Tutoring Queue</h1>
+      <h1 className="header-title">POSC Tutoring Queue</h1>
       <nav>
         <ul className="nav-list">
           <li>
