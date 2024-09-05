@@ -6,6 +6,7 @@ import Request from './components/Request';
 import About from './components/About';
 import Privacy from './components/Privacy';
 import Instructions from './components/Instructions';
+import Queue from './components/Queue';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Request />} />
+            <Route path="/queue" element={<Queue />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/instructions" element={<Instructions />} />
