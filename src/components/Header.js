@@ -65,6 +65,15 @@ function Header() {
                 Instructions
               </Link>
             </li>
+            <li>
+              <Link
+                to="/queue"
+                className={activeLink === "/queue" ? "active" : ""}
+                onClick={() => handleClick("/queue")}
+              >
+                Queue
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
