@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Queue from './components/Queue';
+import Request from './components/Request';
 import About from './components/About';
 import Privacy from './components/Privacy';
 import Instructions from './components/Instructions';
@@ -14,7 +14,7 @@ function App() {
         <Header />
         <main>
           <Routes>
-            <Route path="/" element={<Queue />} />
+            <Route path="/" element={<Request />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/instructions" element={<Instructions />} />
