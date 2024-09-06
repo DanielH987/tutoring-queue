@@ -98,7 +98,7 @@ const RequestPage = () => {
           </button>
         </form>
 
-        <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-1/4 text-center">
+        <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-2/5 text-center">
           <h3 className="text-xl font-semibold mb-2">Queue Status</h3>
           <p>Queue Length: {queue.length} {queue.length === 1 ? 'person' : 'people'} waiting.</p>
         </div>
