@@ -29,9 +29,21 @@ const RequestPage = () => {
   // Load current request and queue count from backend
   useEffect(() => {
     const fetchQueueCount = async () => {
-      const response = await fetch('/api/requests/count');
-      const data = await response.json();
-      setQueueCount(data.count);
+      try {
+        const response = await fetch('/api/requests/count');
+        
+        // Check if the response is valid and contains JSON
+        if (response.ok) {
+          const data = await response.json();
+          setQueueCount(data.count || 0);
+        } else {
+          console.error('Failed to fetch queue count:', response.statusText);
+          setQueueCount(0); // Set to 0 if the response fails
+        }
+      } catch (error) {
+        console.error('Error fetching queue count:', error);
+        setQueueCount(0); // Set to 0 in case of an error
+      }
     };
 
     // Load current request from localStorage
