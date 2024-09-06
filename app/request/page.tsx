@@ -44,7 +44,7 @@ const RequestPage = () => {
   };
 
   return (
-    <div className="p-6 text-left max-w-screen-lg mx-auto">
+    <div className="p-6 text-left max-w-screen-xl mx-auto">
       <h1 className="text-4xl font-bold mb-4 mt-4">POSC Tutoring Queue</h1>
 
       <div className="flex justify-between items-start gap-8">
