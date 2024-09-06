@@ -1,11 +1,10 @@
-const RequestPage = () => {
+import React from 'react';
+import Request from './request/page';
+
+const HomePage = () => {
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Request Help</h1>
-      <p>Welcome to the Request Help page. Please fill out the form to request assistance.</p>
-      {/* Add form or other content here */}
-    </div>
+    <Request/>
   );
 };
 
-export default RequestPage;
+export default HomePage;
