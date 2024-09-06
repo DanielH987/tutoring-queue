@@ -1,7 +1,7 @@
 const PrivacyPage = () => {
   return (
     <div className="p-6 pb-16 text-left max-w-screen-lg mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+      <h1 className="text-3xl font-bold mb-4 mt-4">Privacy Policy</h1>
       <p className="mb-4">
         At [YourWebsiteName], accessible from [YourWebsiteURL], one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by [YourWebsiteName] and how we use it.
       </p>
