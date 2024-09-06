@@ -42,10 +42,10 @@ const Header: React.FC = () => {
   }, [profileOpen]);
 
   return (
-    <header className="flex justify-between items-center bg-red-800 text-white p-4">
+    <header className="flex justify-between items-center custom-header-bg text-white px-10 h-20">
       <div className="flex items-center">
         <Link href="/" passHref>
-          <h1 className="text-2xl font-bold mr-4 cursor-pointer">POSC Tutoring Queue</h1>
+          <h1 className="text-2xl font-bold mr-10 cursor-pointer">POSC Tutoring Queue</h1>
         </Link>
         <nav>
           <ul className="flex space-x-4">
