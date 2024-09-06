@@ -106,13 +106,13 @@ const RequestPage = () => {
   };
 
   return (
-    <div className="p-6 text-left max-w-screen-xl mx-auto">
+    <div className="p-6 text-left max-w-screen-xl mx-auto mb-20"> {/* Added mb-20 to add margin at the bottom */}
       <h1 className="text-4xl font-bold mb-4 mt-4">POSC Tutoring Queue</h1>
 
-      <div className="flex justify-between items-start gap-8">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-8">
         {/* Queue Form or Current Request */}
         {!currentRequest ? (
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-2/3">
+          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Request Help</h2>
 
             <div className="mb-4">
@@ -162,7 +162,7 @@ const RequestPage = () => {
             </button>
           </form>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center w-2/3">
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Your Current Request</h2>
             <p><strong>Name:</strong> {currentRequest.name}</p>
             <p><strong>Course:</strong> {currentRequest.course}</p>
@@ -177,7 +177,7 @@ const RequestPage = () => {
         )}
 
         {/* Queue Status Box */}
-        <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-1/3 text-center">
+        <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-full md:w-1/3 text-center">
           <h3 className="text-xl font-semibold mb-2">Queue Status</h3>
           <p>Queue Length: {queueCount} {queueCount === 1 ? 'person' : 'people'} waiting.</p>
         </div>
