@@ -25,3 +25,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.custom-header-bg {
+  background-color: #9E1B34;
+}
