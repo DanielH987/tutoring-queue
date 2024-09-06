@@ -16,10 +16,14 @@ const RequestPage = () => {
 
   // Course options
   const courses = [
+    { value: 'POSC 101', label: 'POSC 101' },
+    { value: 'POSC 110', label: 'POSC 110' },
+    { value: 'POSC 170', label: 'POSC 170' },
+    { value: 'POSC 190', label: 'POSC 190' },
     { value: 'POSC 202', label: 'POSC 202' },
-    { value: 'POSC 301', label: 'POSC 301' },
-    { value: 'POSC 371', label: 'POSC 371' },
-    { value: 'POSC 401', label: 'POSC 401' },
+    { value: 'POSC 230', label: 'POSC 230' },
+    { value: 'POSC 300', label: 'POSC 300' },
+    { value: 'POSC 304', label: 'POSC 304' },
   ];
 
   useEffect(() => {
