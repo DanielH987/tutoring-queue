@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 const RequestPage = () => {
-  const [queue, setQueue] = useState<{ name: string; course: string; question: string }[]>([]);
+  const [queueCount, setQueueCount] = useState(0); // To store queue count
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
@@ -26,12 +26,21 @@ const RequestPage = () => {
     { value: 'POSC 304', label: 'POSC 304' },
   ];
 
+  // Load current request and queue count from backend
   useEffect(() => {
+    const fetchQueueCount = async () => {
+      const response = await fetch('/api/requests/count');
+      const data = await response.json();
+      setQueueCount(data.count);
+    };
+
     // Load current request from localStorage
     const storedRequest = localStorage.getItem('currentRequest');
     if (storedRequest) {
       setCurrentRequest(JSON.parse(storedRequest));
     }
+
+    fetchQueueCount();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,6 +80,9 @@ const RequestPage = () => {
       setName('');
       setCourse('');
       setQuestion('');
+
+      // Update queue count
+      setQueueCount((prevCount) => prevCount + 1);
     }
   };
 
@@ -87,6 +99,9 @@ const RequestPage = () => {
       // Clear the current request and remove it from localStorage
       setCurrentRequest(null);
       localStorage.removeItem('currentRequest');
+
+      // Update queue count
+      setQueueCount((prevCount) => prevCount - 1);
     }
   };
 
@@ -94,8 +109,9 @@ const RequestPage = () => {
     <div className="p-6 text-left max-w-screen-xl mx-auto">
       <h1 className="text-4xl font-bold mb-4 mt-4">POSC Tutoring Queue</h1>
 
-      {!currentRequest ? (
-        <div className="flex justify-between items-start gap-8">
+      <div className="flex justify-between items-start gap-8">
+        {/* Queue Form or Current Request */}
+        {!currentRequest ? (
           <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Request Help</h2>
 
@@ -145,21 +161,27 @@ const RequestPage = () => {
               Request Help
             </button>
           </form>
+        ) : (
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center w-2/3">
+            <h2 className="text-2xl font-semibold mb-4">Your Current Request</h2>
+            <p><strong>Name:</strong> {currentRequest.name}</p>
+            <p><strong>Course:</strong> {currentRequest.course}</p>
+            <p><strong>Question:</strong> {currentRequest.question}</p>
+            <button
+              onClick={handleCancel}
+              className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 mt-4 transition-colors duration-300"
+            >
+              Cancel Request
+            </button>
+          </div>
+        )}
+
+        {/* Queue Status Box */}
+        <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-1/3 text-center">
+          <h3 className="text-xl font-semibold mb-2">Queue Status</h3>
+          <p>Queue Length: {queueCount} {queueCount === 1 ? 'person' : 'people'} waiting.</p>
         </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Your Current Request</h2>
-          <p><strong>Name:</strong> {currentRequest.name}</p>
-          <p><strong>Course:</strong> {currentRequest.course}</p>
-          <p><strong>Question:</strong> {currentRequest.question}</p>
-          <button
-            onClick={handleCancel}
-            className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 mt-4 transition-colors duration-300"
-          >
-            Cancel Request
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
