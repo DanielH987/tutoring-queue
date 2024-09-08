@@ -8,6 +8,7 @@ const RequestPage = () => {
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
   const [currentRequest, setCurrentRequest] = useState<{ name: string; course: string; question: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   // Validation states
   const [nameError, setNameError] = useState(false);
@@ -52,7 +53,8 @@ const RequestPage = () => {
       setCurrentRequest(JSON.parse(storedRequest));
     }
 
-    fetchQueueCount();
+    // Fetch the queue count and set loading to false
+    fetchQueueCount().finally(() => setIsLoading(false));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -117,8 +119,12 @@ const RequestPage = () => {
     }
   };
 
+  if (isLoading) {
+    return <p>Loading...</p>; // Show a loading state while fetching data
+  }
+
   return (
-    <div className="p-6 text-left max-w-screen-xl mx-auto mb-20"> {/* Added mb-20 to add margin at the bottom */}
+    <div className="p-6 text-left max-w-screen-xl mx-auto mb-20">
       <h1 className="text-4xl font-bold mb-4 mt-4">POSC Tutoring Queue</h1>
 
       <div className="flex flex-col md:flex-row justify-between items-start gap-8">
