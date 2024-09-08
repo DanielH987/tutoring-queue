@@ -7,7 +7,13 @@ const RequestPage = () => {
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
-  const [currentRequest, setCurrentRequest] = useState<{ name: string; course: string; question: string } | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<{ 
+    name: string; 
+    course: string; 
+    question: string;
+    id: string;
+    createdAt: string;
+  } | null>(null);
   const [isRequestLoading, setIsRequestLoading] = useState(true); // Loading state for request area
 
   // Validation states
@@ -179,11 +185,22 @@ const RequestPage = () => {
             </button>
           </form>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center w-full md:w-2/3">
+          <div className=" p-6 text-left w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Your Current Request</h2>
-            <p><strong>Name:</strong> {currentRequest.name}</p>
-            <p><strong>Course:</strong> {currentRequest.course}</p>
-            <p><strong>Question:</strong> {currentRequest.question}</p>
+            <div className="bg-gray-100 rounded-lg shadow-lg p-6 text-left w-full md:w-4/5">
+              <p><strong>Name:</strong> {currentRequest.name}</p>
+              <p><strong>Course:</strong> {currentRequest.course}</p>
+              <p><strong>Question:</strong> {currentRequest.question}</p>
+              <p><strong>Submitted at:</strong> {new Date(currentRequest.createdAt).toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+              })}</p>
+            </div>
+
             <button
               onClick={handleCancel}
               className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 mt-4 transition-colors duration-300"
