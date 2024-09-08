@@ -1,13 +1,22 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { Request } from '../types';
 
 const RequestPage = () => {
-  const [queueCount, setQueueCount] = useState(0); // To store queue count
+  const [queueCount, setQueueCount] = useState<number | null>(null); // Queue count starts as null to detect loading state
+  const [queueRequests, setQueueRequests] = useState<Request[]>([]); // To store all active requests
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
-  const [currentRequest, setCurrentRequest] = useState<{ name: string; course: string; question: string } | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<{ 
+    name: string; 
+    course: string; 
+    question: string;
+    id: string;
+    createdAt: string;
+  } | null>(null);
+  const [isRequestLoading, setIsRequestLoading] = useState(true); // Loading state for request area
 
   // Validation states
   const [nameError, setNameError] = useState(false);
@@ -26,22 +35,22 @@ const RequestPage = () => {
     { value: 'POSC 304', label: 'POSC 304' },
   ];
 
-  // Load current request and queue count from backend
+  // Load current request, queue count, and active requests from backend
   useEffect(() => {
-    const fetchQueueCount = async () => {
+    const fetchQueueData = async () => {
       try {
-        const response = await fetch('/api/requests/count');
+        const response = await fetch('/api/requests');
         
-        // Check if the response is valid and contains JSON
         if (response.ok) {
           const data = await response.json();
-          setQueueCount(data.count || 0);
+          setQueueRequests(data); // Store all active requests
+          setQueueCount(data.length); // Set queue count based on active requests
         } else {
-          console.error('Failed to fetch queue count:', response.statusText);
+          console.error('Failed to fetch queue data:', response.statusText);
           setQueueCount(0); // Set to 0 if the response fails
         }
       } catch (error) {
-        console.error('Error fetching queue count:', error);
+        console.error('Error fetching queue data:', error);
         setQueueCount(0); // Set to 0 in case of an error
       }
     };
@@ -52,7 +61,8 @@ const RequestPage = () => {
       setCurrentRequest(JSON.parse(storedRequest));
     }
 
-    fetchQueueCount();
+    // Fetch queue data and stop loading state
+    fetchQueueData().finally(() => setIsRequestLoading(false));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,7 +104,7 @@ const RequestPage = () => {
       setQuestion('');
 
       // Update queue count
-      setQueueCount((prevCount) => prevCount + 1);
+      setQueueCount((prevCount) => prevCount !== null ? prevCount + 1 : 1);
     }
   };
 
@@ -113,17 +123,26 @@ const RequestPage = () => {
       localStorage.removeItem('currentRequest');
 
       // Update queue count
-      setQueueCount((prevCount) => prevCount - 1);
+      setQueueCount((prevCount) => prevCount !== null ? prevCount - 1 : 0);
     }
   };
 
+  // Calculate the current position of the user's request in the queue
+  const currentPosition = currentRequest
+    ? queueRequests.findIndex(req => req.id === currentRequest.id) + 1 // Find the index and add 1 (since index starts at 0)
+    : null;
+
   return (
-    <div className="p-6 text-left max-w-screen-xl mx-auto mb-20"> {/* Added mb-20 to add margin at the bottom */}
+    <div className="p-6 text-left max-w-screen-xl mx-auto mb-20">
       <h1 className="text-4xl font-bold mb-4 mt-4">POSC Tutoring Queue</h1>
 
       <div className="flex flex-col md:flex-row justify-between items-start gap-8">
         {/* Queue Form or Current Request */}
-        {!currentRequest ? (
+        {isRequestLoading ? (
+          <div className="bg-white rounded-lg p-6 text-center w-full md:w-2/3">
+            <h2 className="text-2xl font-semibold mb-4">Loading...</h2>
+          </div>
+        ) : !currentRequest ? (
           <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Request Help</h2>
 
@@ -174,14 +193,26 @@ const RequestPage = () => {
             </button>
           </form>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center w-full md:w-2/3">
-            <h2 className="text-2xl font-semibold mb-4">Your Current Request</h2>
-            <p><strong>Name:</strong> {currentRequest.name}</p>
-            <p><strong>Course:</strong> {currentRequest.course}</p>
-            <p><strong>Question:</strong> {currentRequest.question}</p>
+          <div className=" p-6 text-left w-full md:w-2/3">
+            <h2 className="text-2xl font-semibold mb-4">Help Requested</h2>
+            <div className="bg-gray-100 rounded-lg shadow-lg p-6 text-left w-full md:w-4/5">
+              <p><strong>Current Position:</strong> {currentPosition} of {queueCount}</p>
+              <p><strong>Name:</strong> {currentRequest.name}</p>
+              <p><strong>Course:</strong> {currentRequest.course}</p>
+              <p><strong>Question:</strong> {currentRequest.question}</p>
+              <p><strong>Submitted at:</strong> {new Date(currentRequest.createdAt).toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+              })}</p>
+            </div>
+
             <button
               onClick={handleCancel}
-              className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 mt-4 transition-colors duration-300"
+              className="custom-bg-color text-white py-2 px-4 rounded-lg hover:bg-red-900 mt-4 transition-colors duration-300"
             >
               Cancel Request
             </button>
@@ -191,7 +222,11 @@ const RequestPage = () => {
         {/* Queue Status Box */}
         <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-full md:w-1/3 text-center">
           <h3 className="text-xl font-semibold mb-2">Queue Status</h3>
-          <p>Queue Length: {queueCount} {queueCount === 1 ? 'person' : 'people'} waiting.</p>
+          {queueCount === null ? (
+            <p>Loading...</p>
+          ) : (
+            <p>Queue Length: {queueCount} {queueCount === 1 ? 'person' : 'people'} waiting.</p>
+          )}
         </div>
       </div>
     </div>

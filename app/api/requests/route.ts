@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/prisma/client';
 
+// GET: Fetch all active requests, sorted by creation time
+export async function GET() {
+  const activeRequests = await prisma.request.findMany({
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+
+  return NextResponse.json(activeRequests);
+}
+
 // POST: Create a new request
 export async function POST(req: Request) {
   const { name, course, question } = await req.json();
