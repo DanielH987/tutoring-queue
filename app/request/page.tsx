@@ -186,8 +186,9 @@ const RequestPage = () => {
           </form>
         ) : (
           <div className=" p-6 text-left w-full md:w-2/3">
-            <h2 className="text-2xl font-semibold mb-4">Your Current Request</h2>
+            <h2 className="text-2xl font-semibold mb-4">Help Requested</h2>
             <div className="bg-gray-100 rounded-lg shadow-lg p-6 text-left w-full md:w-4/5">
+              <p><strong>Current Position:</strong> {1} of {2}</p> {/* TODO: implement position in queue logic */}
               <p><strong>Name:</strong> {currentRequest.name}</p>
               <p><strong>Course:</strong> {currentRequest.course}</p>
               <p><strong>Question:</strong> {currentRequest.question}</p>
