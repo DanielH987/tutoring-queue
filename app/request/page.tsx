@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 
 const RequestPage = () => {
-  const [queueCount, setQueueCount] = useState(0); // To store queue count
+  const [queueCount, setQueueCount] = useState<number | null>(null); // Queue count starts as null to detect loading state
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
   const [currentRequest, setCurrentRequest] = useState<{ name: string; course: string; question: string } | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [isRequestLoading, setIsRequestLoading] = useState(true); // Loading state for request area
 
   // Validation states
   const [nameError, setNameError] = useState(false);
@@ -33,7 +33,6 @@ const RequestPage = () => {
       try {
         const response = await fetch('/api/requests/count');
         
-        // Check if the response is valid and contains JSON
         if (response.ok) {
           const data = await response.json();
           setQueueCount(data.count || 0);
@@ -53,8 +52,8 @@ const RequestPage = () => {
       setCurrentRequest(JSON.parse(storedRequest));
     }
 
-    // Fetch the queue count and set loading to false
-    fetchQueueCount().finally(() => setIsLoading(false));
+    // Fetch queue count and stop loading state
+    fetchQueueCount().finally(() => setIsRequestLoading(false));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,7 +95,7 @@ const RequestPage = () => {
       setQuestion('');
 
       // Update queue count
-      setQueueCount((prevCount) => prevCount + 1);
+      setQueueCount((prevCount) => prevCount !== null ? prevCount + 1 : 1);
     }
   };
 
@@ -115,13 +114,9 @@ const RequestPage = () => {
       localStorage.removeItem('currentRequest');
 
       // Update queue count
-      setQueueCount((prevCount) => prevCount - 1);
+      setQueueCount((prevCount) => prevCount !== null ? prevCount - 1 : 0);
     }
   };
-
-  if (isLoading) {
-    return <p>Loading...</p>; // Show a loading state while fetching data
-  }
 
   return (
     <div className="p-6 text-left max-w-screen-xl mx-auto mb-20">
@@ -129,7 +124,11 @@ const RequestPage = () => {
 
       <div className="flex flex-col md:flex-row justify-between items-start gap-8">
         {/* Queue Form or Current Request */}
-        {!currentRequest ? (
+        {isRequestLoading ? (
+          <div className="bg-white rounded-lg p-6 text-center w-full md:w-2/3">
+            <h2 className="text-2xl font-semibold mb-4">Loading...</h2>
+          </div>
+        ) : !currentRequest ? (
           <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Request Help</h2>
 
@@ -197,7 +196,11 @@ const RequestPage = () => {
         {/* Queue Status Box */}
         <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-full md:w-1/3 text-center">
           <h3 className="text-xl font-semibold mb-2">Queue Status</h3>
-          <p>Queue Length: {queueCount} {queueCount === 1 ? 'person' : 'people'} waiting.</p>
+          {queueCount === null ? (
+            <p>Loading...</p>
+          ) : (
+            <p>Queue Length: {queueCount} {queueCount === 1 ? 'person' : 'people'} waiting.</p>
+          )}
         </div>
       </div>
     </div>
