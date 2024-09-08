@@ -212,7 +212,7 @@ const RequestPage = () => {
 
             <button
               onClick={handleCancel}
-              className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 mt-4 transition-colors duration-300"
+              className="custom-bg-color text-white py-2 px-4 rounded-lg hover:bg-red-900 mt-4 transition-colors duration-300"
             >
               Cancel Request
             </button>
