@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { Request } from '../types';
 
 const RequestPage = () => {
   const [queueCount, setQueueCount] = useState<number | null>(null); // Queue count starts as null to detect loading state
+  const [queueRequests, setQueueRequests] = useState<Request[]>([]); // To store all active requests
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
@@ -33,21 +35,22 @@ const RequestPage = () => {
     { value: 'POSC 304', label: 'POSC 304' },
   ];
 
-  // Load current request and queue count from backend
+  // Load current request, queue count, and active requests from backend
   useEffect(() => {
-    const fetchQueueCount = async () => {
+    const fetchQueueData = async () => {
       try {
-        const response = await fetch('/api/requests/count');
+        const response = await fetch('/api/requests');
         
         if (response.ok) {
           const data = await response.json();
-          setQueueCount(data.count || 0);
+          setQueueRequests(data); // Store all active requests
+          setQueueCount(data.length); // Set queue count based on active requests
         } else {
-          console.error('Failed to fetch queue count:', response.statusText);
+          console.error('Failed to fetch queue data:', response.statusText);
           setQueueCount(0); // Set to 0 if the response fails
         }
       } catch (error) {
-        console.error('Error fetching queue count:', error);
+        console.error('Error fetching queue data:', error);
         setQueueCount(0); // Set to 0 in case of an error
       }
     };
@@ -58,8 +61,8 @@ const RequestPage = () => {
       setCurrentRequest(JSON.parse(storedRequest));
     }
 
-    // Fetch queue count and stop loading state
-    fetchQueueCount().finally(() => setIsRequestLoading(false));
+    // Fetch queue data and stop loading state
+    fetchQueueData().finally(() => setIsRequestLoading(false));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -123,6 +126,11 @@ const RequestPage = () => {
       setQueueCount((prevCount) => prevCount !== null ? prevCount - 1 : 0);
     }
   };
+
+  // Calculate the current position of the user's request in the queue
+  const currentPosition = currentRequest
+    ? queueRequests.findIndex(req => req.id === currentRequest.id) + 1 // Find the index and add 1 (since index starts at 0)
+    : null;
 
   return (
     <div className="p-6 text-left max-w-screen-xl mx-auto mb-20">
@@ -188,7 +196,7 @@ const RequestPage = () => {
           <div className=" p-6 text-left w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Help Requested</h2>
             <div className="bg-gray-100 rounded-lg shadow-lg p-6 text-left w-full md:w-4/5">
-              <p><strong>Current Position:</strong> {1} of {2}</p> {/* TODO: implement position in queue logic */}
+              <p><strong>Current Position:</strong> {currentPosition} of {queueCount}</p>
               <p><strong>Name:</strong> {currentRequest.name}</p>
               <p><strong>Course:</strong> {currentRequest.course}</p>
               <p><strong>Question:</strong> {currentRequest.question}</p>
