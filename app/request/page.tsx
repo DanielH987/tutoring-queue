@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Request } from '../types';
+import Pusher from 'pusher-js';
 
 const RequestPage = () => {
   const [queueCount, setQueueCount] = useState<number | null>(null); // Queue count starts as null to detect loading state
@@ -37,6 +38,21 @@ const RequestPage = () => {
 
   // Load current request, queue count, and active requests from backend
   useEffect(() => {
+    // Initialize Pusher client
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    });
+
+    // Subscribe to the queue channel
+    const channel = pusher.subscribe('queue-channel');
+
+    // Listen for queue updates
+    channel.bind('update-queue', async (data: { count: number }) => {
+      setQueueCount(data.count); // Update the queue count when receiving Pusher updates
+      // Fetch updated queue requests from the backend whenever the queue changes
+      await fetchQueueData();
+    });
+
     const fetchQueueData = async () => {
       try {
         const response = await fetch('/api/requests');
@@ -44,14 +60,12 @@ const RequestPage = () => {
         if (response.ok) {
           const data = await response.json();
           setQueueRequests(data); // Store all active requests
-          setQueueCount(data.length); // Set queue count based on active requests
+          setQueueCount(data.length); // Set queue count based on the number of active requests
         } else {
           console.error('Failed to fetch queue data:', response.statusText);
-          setQueueCount(0); // Set to 0 if the response fails
         }
       } catch (error) {
         console.error('Error fetching queue data:', error);
-        setQueueCount(0); // Set to 0 in case of an error
       }
     };
 
@@ -61,26 +75,32 @@ const RequestPage = () => {
       setCurrentRequest(JSON.parse(storedRequest));
     }
 
-    // Fetch queue data and stop loading state
+    // Fetch queue data initially
     fetchQueueData().finally(() => setIsRequestLoading(false));
+
+    // Cleanup on component unmount
+    return () => {
+      channel.unbind_all();
+      pusher.unsubscribe('queue-channel');
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     // Reset error states
     setNameError(false);
     setCourseError(false);
     setQuestionError(false);
-
+  
     // Validation checks
     if (name === '') setNameError(true);
     if (course === '') setCourseError(true);
     if (question === '') setQuestionError(true);
-
+  
     if (name && course && question) {
       const newStudent = { name, course, question };
-
+  
       // Store request in backend
       const response = await fetch('/api/requests', {
         method: 'POST',
@@ -89,22 +109,31 @@ const RequestPage = () => {
         },
         body: JSON.stringify(newStudent),
       });
-
+  
       const savedRequest = await response.json();
-
+  
       // Store the current request in localStorage
       localStorage.setItem('currentRequest', JSON.stringify(savedRequest));
-
+  
+      // Trigger the Pusher event to update the queue
+      await fetch('/api/pusher', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event: 'update-queue',
+          data: { count: (queueCount ?? 0) + 1 }, // Increment queue count
+        }),
+      });
+  
       // Set the current request state
       setCurrentRequest(savedRequest);
-
+  
       // Clear form fields
       setName('');
       setCourse('');
       setQuestion('');
-
-      // Update queue count
-      setQueueCount((prevCount) => prevCount !== null ? prevCount + 1 : 1);
     }
   };
 
@@ -117,13 +146,22 @@ const RequestPage = () => {
         },
         body: JSON.stringify({ id: currentRequest.id }),
       });
-
+  
+      // Trigger the Pusher event to update the queue
+      await fetch('/api/pusher', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event: 'update-queue',
+          data: { count: (queueCount ?? 0) - 1 }, // Decrement queue count
+        }),
+      });
+  
       // Clear the current request and remove it from localStorage
       setCurrentRequest(null);
       localStorage.removeItem('currentRequest');
-
-      // Update queue count
-      setQueueCount((prevCount) => prevCount !== null ? prevCount - 1 : 0);
     }
   };
 
@@ -200,14 +238,16 @@ const RequestPage = () => {
               <p><strong>Name:</strong> {currentRequest.name}</p>
               <p><strong>Course:</strong> {currentRequest.course}</p>
               <p><strong>Question:</strong> {currentRequest.question}</p>
-              <p><strong>Submitted at:</strong> {new Date(currentRequest.createdAt).toLocaleString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true,
-              })}</p>
+              <p className="whitespace-nowrap overflow-hidden">
+                <strong>Submitted at:</strong> {new Date(currentRequest.createdAt).toLocaleString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: true,
+                })}
+              </p>
             </div>
 
             <button
