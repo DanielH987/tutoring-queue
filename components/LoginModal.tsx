@@ -82,15 +82,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             />
           </div>
           <div className="flex justify-between items-center">
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <button type="submit" className="custom-bg-color text-white px-4 py-2 rounded-lg hover:bg-red-900 transition-colors duration-300">
               {isLogin ? 'Login' : 'Sign Up'}
             </button>
           </div>
         </form>
-        <p className="mt-4 text-center">
+        <p className="text-gray-500 mt-4 text-center">
           {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
           <span
-            className="text-blue-600 cursor-pointer hover:underline"
+            className="cursor-pointer underline"
             onClick={() => setIsLogin(!isLogin)}
           >
             {isLogin ? 'Sign Up' : 'Login'}
