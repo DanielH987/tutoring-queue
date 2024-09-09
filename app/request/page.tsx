@@ -47,8 +47,10 @@ const RequestPage = () => {
     const channel = pusher.subscribe('queue-channel');
 
     // Listen for queue updates
-    channel.bind('update-queue', (data: { count: number }) => {
+    channel.bind('update-queue', async (data: { count: number }) => {
       setQueueCount(data.count); // Update the queue count when receiving Pusher updates
+      // Fetch updated queue requests from the backend whenever the queue changes
+      await fetchQueueData();
     });
 
     const fetchQueueData = async () => {
@@ -73,7 +75,7 @@ const RequestPage = () => {
       setCurrentRequest(JSON.parse(storedRequest));
     }
 
-    // Fetch queue data and stop loading state
+    // Fetch queue data initially
     fetchQueueData().finally(() => setIsRequestLoading(false));
 
     // Cleanup on component unmount
