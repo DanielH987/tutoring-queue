@@ -27,6 +27,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setNameError(false);
   };
 
+  // Ensure the login form is always shown when the modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsLogin(true); // Always reset to login mode when modal is opened
+      resetForm(); // Reset form fields and errors
+    }
+  }, [isOpen]);
+
   // Close modal if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,13 +100,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
         {/* X Button to close the modal */}
         <button
-            className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black border-none hover:border-2 hover:border-gray-300 hover:rounded-full hover:bg-gray-100 p-2 transition-all duration-300"
-            onClick={() => {
-              resetForm(); // Reset form when closing via the "X" button
-              onClose();
-            }}
+          className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black border-none hover:border-2 hover:border-gray-300 hover:rounded-full hover:bg-gray-100 p-2 transition-all duration-300"
+          onClick={() => {
+            resetForm(); // Reset form when closing via the "X" button
+            onClose();
+          }}
         >
-            &times;
+          &times;
         </button>
 
         <h2 className="text-2xl font-semibold mb-4">
