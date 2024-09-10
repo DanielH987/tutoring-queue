@@ -20,3 +20,12 @@ model Request {
   question String
   createdAt DateTime @default(now())
 }
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  password  String
+  role      String   @default("tutor")
+  createdAt DateTime @default(now())
+}

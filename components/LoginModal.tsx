@@ -1,5 +1,6 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
 import { useRef, useEffect, useState } from 'react';
 
 interface LoginModalProps {
@@ -16,6 +17,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [nameError, setNameError] = useState(false);
+  const [error, setError] = useState('');
 
   // Reset errors and form fields when closing the modal or switching modes
   const resetForm = () => {
@@ -55,8 +57,41 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isLogin) {
+      // Handle login
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (result?.error) {
+        setError('Invalid credentials');
+      } else {
+        onClose(); // Close modal on successful login
+      }
+    } else {
+      // Handle sign-up
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        onClose(); // Close modal on successful sign-up
+        setIsLogin(true); // Switch to login mode
+      }
+    }
 
     // Reset errors
     setEmailError(false);
@@ -97,6 +132,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div>{error && <p>{error}</p>}</div>
       <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
         {/* X Button to close the modal */}
         <button
