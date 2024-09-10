@@ -2,16 +2,20 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation'; // Import useRouter for programmatic navigation
 import { FaUserCircle } from 'react-icons/fa';
 import LoginModal from './LoginModal'; // Import the LoginModal component
+import { useSession, signOut } from 'next-auth/react'; // Import session hook and signOut
 
 const Header: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter(); // Initialize the router for navigation
   const [activeLink, setActiveLink] = useState(pathname);
   const [profileOpen, setProfileOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false); // State for login modal
   const profileRef = useRef<HTMLDivElement>(null);
+  
+  const { data: session } = useSession(); // Get session data from NextAuth.js
 
   useEffect(() => {
     setActiveLink(pathname);
@@ -53,6 +57,18 @@ const Header: React.FC = () => {
     setShowLoginModal(false);
   };
 
+  // Handle sign-out
+  const handleLogout = () => {
+    setProfileOpen(false);
+    signOut(); // Call signOut from NextAuth.js
+  };
+
+  // Navigate to profile page and close the dropdown
+  const handleViewProfile = () => {
+    setProfileOpen(false); // Close the profile dropdown
+    router.push('/profile'); // Navigate to the profile page
+  };
+
   return (
     <>
       <header className="flex justify-between items-center custom-bg-color text-white px-10 h-20">
@@ -85,12 +101,31 @@ const Header: React.FC = () => {
           {profileOpen && (
             <div className="absolute top-10 right-0 bg-white text-black rounded-lg shadow-lg p-2 z-50">
               <ul className="list-none p-0 m-0">
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={openLoginModal} // Open login modal on click
-                >
-                  Login
-                </li>
+                {session ? (
+                  // When the user is logged in, show View Profile and Logout
+                  <>
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={handleViewProfile} // Use handleViewProfile to navigate and close dropdown
+                    >
+                      View Profile
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </li>
+                  </>
+                ) : (
+                  // When the user is not logged in, show Login
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={openLoginModal}
+                  >
+                    Login
+                  </li>
+                )}
               </ul>
             </div>
           )}
