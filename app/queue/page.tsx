@@ -18,8 +18,8 @@ const Queue = async () => {
   const requests = await prisma.request.findMany();
 
   return (
-    <div className="p-6 max-w-screen-md mx-auto">
-      <h1 className="text-2xl font-semibold mb-6">Queue of Current Requests</h1>
+    <div className="p-6 text-left max-w-screen-lg mx-auto">
+      <h1 className="text-3xl font-bold mb-4 mt-4">Queue of Current Requests</h1>
 
       {/* Check if there are any requests */}
       {requests.length > 0 ? (
