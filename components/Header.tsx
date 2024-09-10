@@ -88,6 +88,15 @@ const Header: React.FC = () => {
                   Instructions
                 </Link>
               </li>
+
+              {/* Conditionally render the Queue button if the user is logged in */}
+              {session && (
+                <li>
+                  <Link href="/queue" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/queue' ? 'font-bold' : ''}`} onClick={() => handleClick('/queue')}>
+                    Queue
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
