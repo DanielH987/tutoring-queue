@@ -97,6 +97,15 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
               )}
+
+              {/* Conditionally render the Admin Dashboard button if the user is an admin */}
+              {session?.user?.role === 'admin' && (
+                <li>
+                  <Link href="/admin" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/admin' ? 'font-bold' : ''}`} onClick={() => handleClick('/admin')}>
+                    Admin Dashboard
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
