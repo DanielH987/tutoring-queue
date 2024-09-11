@@ -63,6 +63,7 @@ const AdminApproval = () => {
             <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
                 <p><strong>Name:</strong> {user.name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Role:</strong> {user.role}</p>
                 <div className="flex space-x-4 mt-4"> {/* Flexbox with horizontal space between buttons */}
                 <button
                     className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300"
