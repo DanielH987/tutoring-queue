@@ -100,23 +100,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         setToastType('destructive'); // Set toast type to destructive
         setShowToast(true); // Show the toast
       } else {
-        // After sign-up, automatically sign the user in
-        const loginResult = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
-        });
-  
-        if (loginResult?.error) {
-          setToastMessage(loginResult?.error); // Handle error during login after sign-up
-          setToastType('destructive');
-          setShowToast(true);
-        } else {
-          setToastMessage('Sign-up and login successful!'); // Success message
-          setToastType('success');
-          setShowToast(true);
-          onClose(); // Close the modal
-        }
+        setToastMessage('Sign-up successful! Your account is pending approval'); // Success message after sign-up
+        setToastType('success');
+        setShowToast(true);
+        onClose(); // Close the modal without logging in
       }
     }
   
@@ -144,7 +131,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     if (valid) {
       console.log('Form submitted');
     }
-  };
+  };  
   
   // Handle mode toggle and reset errors
   const handleModeSwitch = () => {
