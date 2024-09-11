@@ -26,6 +26,7 @@ model User {
   email     String   @unique
   name      String
   password  String
+  role      String   @default("tutor")
   status    Status   @default(PENDING)
   createdAt DateTime @default(now())
 }
