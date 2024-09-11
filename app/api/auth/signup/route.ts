@@ -7,9 +7,14 @@ const prisma = new PrismaClient();
 export async function POST(req: Request) {
   const { email, password, name } = await req.json();
 
-  // Validate input
+  // Validate input: Check if all fields are provided
   if (!email || !password || !name) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+  }
+
+  // Validate password length (at least 6 characters)
+  if (password.length < 6) {
+    return NextResponse.json({ error: 'Password must be at least 6 characters long' }, { status: 400 });
   }
 
   // Check if the user already exists
