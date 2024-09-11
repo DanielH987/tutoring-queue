@@ -55,7 +55,16 @@ const Queue = () => {
       {requests.length > 0 ? (
         <ul className="space-y-4">
           {requests.map((request) => (
-            <li key={request.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <li key={request.id} className="bg-gray-100 p-4 rounded-lg shadow-md relative">
+              <div className="absolute top-4 right-4">
+                {/* Add the button in the top-right corner */}
+                <button
+                  className="custom-bg-color text-white py-2 px-4 rounded-lg hover:bg-red-900 transition-colors duration-300"
+                  onClick={() => alert(`Button clicked for request: ${request.id}`)} // Placeholder action
+                >
+                  Help
+                </button>
+              </div>
               <p><strong>Name:</strong> {request.name}</p>
               <p><strong>Course:</strong> {request.course}</p>
               <p><strong>Question:</strong> {request.question}</p>
