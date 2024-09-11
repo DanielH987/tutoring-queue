@@ -15,7 +15,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
-          throw new Error('Email and password are required');
+          return null; // Return null if no credentials provided
         }
 
         // Find the user in the database
@@ -24,7 +24,7 @@ export const authOptions = {
         });
 
         if (!user) {
-          throw new Error('No user found');
+          return null; // Return null if the user doesn't exist
         }
 
         // Check if the user's status is approved
@@ -48,22 +48,24 @@ export const authOptions = {
     }),
   ],
   pages: {
-    signIn: '/auth/signin',
+    signIn: '/auth/signin',  // Redirect here if login fails
   },
   session: {
     strategy: 'jwt',
   },
   callbacks: {
     async session({ session, token }) {
-      // Attach the user's id and email to the session object
+      // Attach the user's id, email, and role to the session object
       session.user.id = token.sub;
       session.user.email = token.email;
+      session.user.role = token.role;  // Include the role in the session
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
         token.email = user.email;
+        token.role = user.role;  // Include the role in the token
       }
       return token;
     },
