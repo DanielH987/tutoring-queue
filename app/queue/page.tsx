@@ -1,21 +1,51 @@
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import prisma from '@/prisma/client';
+'use client';
 
-const Queue = async () => {
-  // Await the session data from NextAuth using getServerSession
-  const session = await getServerSession(authOptions);
+import { useEffect, useState } from 'react';
+import Pusher from 'pusher-js';
+import { useSession } from 'next-auth/react'; // Use client-side session
+import type { Request } from '@prisma/client';
 
-  console.log('Session:', session); // Check the session
+const Queue = () => {
+  const [requests, setRequests] = useState<Request[]>([]);
+  const { data: session } = useSession(); // Client-side session management
 
-  // If there is no session, redirect the user to the home page
-  if (!session) {
-    redirect('/'); // Use server-side redirection
-  }
+  // Fetch the initial requests from the database
+  const fetchRequests = async () => {
+    const response = await fetch('/api/requests');
+    const data = await response.json();
+    setRequests(data);
+  };
 
-  // Fetch all the current requests from the database using Prisma
-  const requests = await prisma.request.findMany();
+  useEffect(() => {
+    // Check if the user is authenticated
+    if (!session) {
+      // If there's no session, handle redirection client-side
+      window.location.href = '/';
+      return;
+    }
+
+    // Call fetchRequests on component mount to load initial requests
+    fetchRequests();
+
+    // Initialize Pusher client
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    });
+
+    // Subscribe to the queue channel
+    const channel = pusher.subscribe('queue-channel');
+
+    // Listen for the 'update-queue' event and fetch the updated list of requests
+    channel.bind('update-queue', () => {
+      fetchRequests(); // Fetch the latest requests when a new event is triggered
+    });
+
+    // Cleanup when component unmounts
+    return () => {
+      channel.unbind_all();
+      pusher.unsubscribe('queue-channel');
+    };
+  }, [session]);
 
   return (
     <div className="p-6 text-left max-w-screen-lg mx-auto">
@@ -38,6 +68,6 @@ const Queue = async () => {
       )}
     </div>
   );
-}
+};
 
 export default Queue;
