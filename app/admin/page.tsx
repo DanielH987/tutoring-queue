@@ -46,7 +46,12 @@ const AdminApproval = () => {
 
   // Render loading state while session is being fetched
   if (status === 'loading') {
-    return <p>Loading...</p>;
+    return (
+      <div className="p-6 text-left max-w-screen-lg mx-auto">
+      <h1 className="text-3xl font-bold mb-4 mt-4">Pending User Approvals</h1>
+        <p>Loading...</p>
+      </div>
+    )
   }
 
   return (
