@@ -15,7 +15,7 @@ const Header: React.FC = () => {
   const [showLoginModal, setShowLoginModal] = useState(false); // State for login modal
   const profileRef = useRef<HTMLDivElement>(null);
   
-  const { data: session } = useSession(); // Get session data from NextAuth.js
+  const { data: session, status } = useSession(); // Get session data and status from NextAuth.js
 
   useEffect(() => {
     setActiveLink(pathname);
@@ -89,8 +89,8 @@ const Header: React.FC = () => {
                 </Link>
               </li>
 
-              {/* Conditionally render the Queue button if the user is logged in */}
-              {session && (
+              {/* Conditionally render the Queue button if the session status is not loading */}
+              {status === 'authenticated' && (
                 <li>
                   <Link href="/queue" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/queue' ? 'font-bold' : ''}`} onClick={() => handleClick('/queue')}>
                     Queue
@@ -99,7 +99,7 @@ const Header: React.FC = () => {
               )}
 
               {/* Conditionally render the Admin Dashboard button if the user is an admin */}
-              {session?.user?.role === 'admin' && (
+              {status === 'authenticated' && session?.user?.role === 'admin' && (
                 <li>
                   <Link href="/admin" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/admin' ? 'font-bold' : ''}`} onClick={() => handleClick('/admin')}>
                     Admin Dashboard
