@@ -13,12 +13,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Request {
+model ActiveRequest {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   course   String
   question String
   createdAt DateTime @default(now())
+}
+
+model ProcessedRequest {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  tutorId       String   @db.ObjectId
+  studentName          String
+  course        String
+  question      String
+  waitTime      Int      // Time in minutes from request creation to being picked up by a tutor
+  helpTime      Int      // Time in minutes the tutor spent helping the student
+  createdAt     DateTime @default(now()) // When the processed request record was created
+  
+  // Relations
+  tutor         User     @relation(fields: [tutorId], references: [id])
 }
 
 model User {
@@ -29,6 +43,8 @@ model User {
   role      String   @default("tutor")
   status    Status   @default(PENDING)
   createdAt DateTime @default(now())
+
+  ProcessedRequest ProcessedRequest[]
 }
 
 enum Status {
