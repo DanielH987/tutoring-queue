@@ -36,6 +36,22 @@ const RequestPage = () => {
     { value: 'POSC 304', label: 'POSC 304' },
   ];
 
+  const fetchQueueData = async () => {
+    try {
+      const response = await fetch('/api/requests');
+      
+      if (response.ok) {
+        const data = await response.json();
+        setQueueRequests(data); // Store all active requests
+        setQueueCount(data.length); // Set queue count based on the number of active requests
+      } else {
+        console.error('Failed to fetch queue data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching queue data:', error);
+    }
+  };
+
   // Load current request, queue count, and active requests from backend
   useEffect(() => {
     // Initialize Pusher client
@@ -52,22 +68,6 @@ const RequestPage = () => {
       // Fetch updated queue requests from the backend whenever the queue changes
       await fetchQueueData();
     });
-
-    const fetchQueueData = async () => {
-      try {
-        const response = await fetch('/api/requests');
-        
-        if (response.ok) {
-          const data = await response.json();
-          setQueueRequests(data); // Store all active requests
-          setQueueCount(data.length); // Set queue count based on the number of active requests
-        } else {
-          console.error('Failed to fetch queue data:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching queue data:', error);
-      }
-    };
 
     // Load current request from localStorage
     const storedRequest = localStorage.getItem('currentRequest');
@@ -97,11 +97,12 @@ const RequestPage = () => {
     const channel = pusher.subscribe('queue-channel');
 
     // Listen for the specific request-picked event to remove the current request if it was picked up
-    channel.bind('request-picked', (data: { requestId: string }) => {
+    channel.bind('request-picked', async (data: { requestId: string }) => {
       if (currentRequest?.id === data.requestId) {
         // If the current request matches the picked-up request, remove it from the student's screen
         setCurrentRequest(null);
         localStorage.removeItem('currentRequest');
+        await fetchQueueData(); // Fetch updated queue data to update the count correctly
       }
     });
 
