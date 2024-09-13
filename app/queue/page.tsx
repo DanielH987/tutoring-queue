@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import Pusher from 'pusher-js';
 import { useSession } from 'next-auth/react'; // Use client-side session
-import type { Request } from '@prisma/client';
+import type { ActiveRequest } from '@prisma/client';
 
 const Queue = () => {
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<ActiveRequest[]>([]);
   const { data: session } = useSession(); // Client-side session management
 
   // Fetch the initial requests from the database
@@ -47,6 +47,31 @@ const Queue = () => {
     };
   }, [session]);
 
+  const processRequest = async (requestId: string, helpTime: number) => {
+    const tutorId = session?.user.id; // Get the logged-in tutor's ID
+
+    const response = await fetch('/api/process-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        requestId,
+        tutorId,
+        helpTime, // You can capture help time as part of your logic
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert('Request processed successfully!');
+      fetchRequests(); // Update the requests
+    } else {
+      alert('Failed to process request');
+    }
+  };
+
   return (
     <div className="p-6 text-left max-w-screen-lg mx-auto">
       <h1 className="text-3xl font-bold mb-4 mt-4">Queue of Current Requests</h1>
@@ -60,7 +85,7 @@ const Queue = () => {
                 {/* Add the button in the top-right corner */}
                 <button
                   className="custom-bg-color text-white py-2 px-4 rounded-lg hover:bg-red-900 transition-colors duration-300"
-                  onClick={() => alert(`Button clicked for request: ${request.id}`)} // Placeholder action
+                  onClick={() => processRequest(request.id, 30)} // Example help time of 30 minutes
                 >
                   Help
                 </button>
