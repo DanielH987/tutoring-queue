@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Request } from '../types';
+import Modal from '@/components/Modal';
 import Pusher from 'pusher-js';
 
 const RequestPage = () => {
@@ -18,6 +19,9 @@ const RequestPage = () => {
     createdAt: string;
   } | null>(null);
   const [isRequestLoading, setIsRequestLoading] = useState(true); // Loading state for request area
+
+  // Modal state for when a request is picked up
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Validation states
   const [nameError, setNameError] = useState(false);
@@ -103,6 +107,9 @@ const RequestPage = () => {
         setCurrentRequest(null);
         localStorage.removeItem('currentRequest');
         await fetchQueueData(); // Fetch updated queue data to update the count correctly
+
+        // Trigger the modal to inform the student that their request was picked up
+        setIsModalOpen(true); // Open modal
       }
     });
 
@@ -191,6 +198,10 @@ const RequestPage = () => {
       setCurrentRequest(null);
       localStorage.removeItem('currentRequest');
     }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
   };
 
   // Calculate the current position of the user's request in the queue
@@ -297,6 +308,11 @@ const RequestPage = () => {
           )}
         </div>
       </div>
+
+      {/* Modal for picked-up request */}
+      <Modal isOpen={isModalOpen} onClose={closeModal} title="Request Picked Up">
+        <p>Your request has been picked up by a tutor. They will assist you shortly!</p>
+      </Modal>
     </div>
   );
 };
