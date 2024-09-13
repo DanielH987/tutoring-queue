@@ -36,6 +36,22 @@ const RequestPage = () => {
     { value: 'POSC 304', label: 'POSC 304' },
   ];
 
+  const fetchQueueData = async () => {
+    try {
+      const response = await fetch('/api/requests');
+      
+      if (response.ok) {
+        const data = await response.json();
+        setQueueRequests(data); // Store all active requests
+        setQueueCount(data.length); // Set queue count based on the number of active requests
+      } else {
+        console.error('Failed to fetch queue data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching queue data:', error);
+    }
+  };
+
   // Load current request, queue count, and active requests from backend
   useEffect(() => {
     // Initialize Pusher client
@@ -53,22 +69,6 @@ const RequestPage = () => {
       await fetchQueueData();
     });
 
-    const fetchQueueData = async () => {
-      try {
-        const response = await fetch('/api/requests');
-        
-        if (response.ok) {
-          const data = await response.json();
-          setQueueRequests(data); // Store all active requests
-          setQueueCount(data.length); // Set queue count based on the number of active requests
-        } else {
-          console.error('Failed to fetch queue data:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching queue data:', error);
-      }
-    };
-
     // Load current request from localStorage
     const storedRequest = localStorage.getItem('currentRequest');
     if (storedRequest) {
@@ -84,6 +84,34 @@ const RequestPage = () => {
       pusher.unsubscribe('queue-channel');
     };
   }, []);
+
+  // New effect to track current request and remove it when picked up
+  useEffect(() => {
+    if (!currentRequest) return;
+
+    // Initialize a separate listener for 'request-picked' specific to the current request
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    });
+
+    const channel = pusher.subscribe('queue-channel');
+
+    // Listen for the specific request-picked event to remove the current request if it was picked up
+    channel.bind('request-picked', async (data: { requestId: string }) => {
+      if (currentRequest?.id === data.requestId) {
+        // If the current request matches the picked-up request, remove it from the student's screen
+        setCurrentRequest(null);
+        localStorage.removeItem('currentRequest');
+        await fetchQueueData(); // Fetch updated queue data to update the count correctly
+      }
+    });
+
+    // Cleanup the listener when `currentRequest` changes or the component unmounts
+    return () => {
+      channel.unbind('request-picked');
+      pusher.unsubscribe('queue-channel');
+    };
+  }, [currentRequest]); // This hook runs only when `currentRequest` changes
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

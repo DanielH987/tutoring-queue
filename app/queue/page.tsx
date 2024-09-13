@@ -47,7 +47,7 @@ const Queue = () => {
 
   const processRequest = async (requestId: string, helpTime: number) => {
     const tutorId = session?.user.id; // Get the logged-in tutor's ID
-
+  
     const response = await fetch('/api/process-request', {
       method: 'POST',
       headers: {
@@ -59,17 +59,30 @@ const Queue = () => {
         helpTime, // You can capture help time as part of your logic
       }),
     });
-
+  
     const data = await response.json();
-
+  
     if (data.success) {
       alert('Request processed successfully!');
+  
+      // Trigger a Pusher event to notify the student that their request has been picked up
+      await fetch('/api/pusher', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event: 'request-picked',
+          data: { requestId }, // Include the request ID in the event data
+        }),
+      });
+  
       fetchRequests(); // Update the requests
     } else {
       alert('Failed to process request');
     }
   };
-
+  
   // Display a loading state until session data is available
   if (status === 'loading') {
     return (
