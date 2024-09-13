@@ -3,7 +3,7 @@ import prisma from '@/prisma/client';
 
 // GET: Fetch all active requests, sorted by creation time
 export async function GET() {
-  const activeRequests = await prisma.request.findMany({
+  const activeRequests = await prisma.activeRequest.findMany({
     orderBy: {
       createdAt: 'asc',
     },
@@ -16,7 +16,7 @@ export async function GET() {
 export async function POST(req: Request) {
   const { name, course, question } = await req.json();
 
-  const newRequest = await prisma.request.create({
+  const newRequest = await prisma.activeRequest.create({
     data: {
       name,
       course,
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const { id } = await req.json();
 
-  await prisma.request.delete({
+  await prisma.activeRequest.delete({
     where: { id },
   });
 
