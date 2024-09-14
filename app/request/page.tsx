@@ -11,13 +11,7 @@ const RequestPage = () => {
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
-  const [currentRequest, setCurrentRequest] = useState<{
-    name: string;
-    course: string;
-    question: string;
-    id: string;
-    createdAt: string;
-  } | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<Request | null>(null);
   const [isRequestLoading, setIsRequestLoading] = useState(true); // Loading state for request area
 
   // Modal state for when a request is picked up
