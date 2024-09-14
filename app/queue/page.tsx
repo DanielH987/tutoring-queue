@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Pusher from 'pusher-js';
 import { useSession } from 'next-auth/react'; // Use client-side session
+import Request from '@/components/Request'; // Import the new Request component
 import Modal from '@/components/Modal'; // Import the Modal component
 import Toast from '@/components/Toast';
 import type { ActiveRequest } from '@prisma/client';
@@ -132,10 +133,13 @@ const Queue = () => {
                     Help
                   </button>
                 </div>
-                <p><strong>Name:</strong> {request.name}</p>
-                <p><strong>Course:</strong> {request.course}</p>
-                <p><strong>Question:</strong> {request.question}</p>
-                <p><strong>Submitted at:</strong> {new Date(request.createdAt).toLocaleString()}</p>
+                <Request
+                  name={request.name}
+                  course={request.course}
+                  question={request.question}
+                  createdAt={new Date(request.createdAt).toISOString()} // Convert Date to string
+                  hasShadow={false}
+                />
               </li>
             ))}
           </ul>
