@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Request } from '../types';
 import Modal from '@/components/Modal';
-import { useModal } from '../context/ModalContext';
 import Pusher from 'pusher-js';
 
 const RequestPage = () => {
