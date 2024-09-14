@@ -1,4 +1,4 @@
-export type Request = {
+export type RequestType = {
     id: string;
     name: string;
     course: string;

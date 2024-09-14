@@ -1,17 +1,18 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Request } from '../types';
+import { RequestType } from '../types';
+import Request from '@/components/Request'; // Import the new Request component
 import Modal from '@/components/Modal';
 import Pusher from 'pusher-js';
 
 const RequestPage = () => {
   const [queueCount, setQueueCount] = useState<number | null>(null); // Queue count starts as null to detect loading state
-  const [queueRequests, setQueueRequests] = useState<Request[]>([]); // To store all active requests
+  const [queueRequests, setQueueRequests] = useState<RequestType[]>([]); // To store all active requests
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
-  const [currentRequest, setCurrentRequest] = useState<Request | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<RequestType | null>(null);
   const [isRequestLoading, setIsRequestLoading] = useState(true); // Loading state for request area
 
   // Modal state for when a request is picked up
@@ -274,22 +275,14 @@ const RequestPage = () => {
         ) : (
           <div className=" p-6 text-left w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Help Requested</h2>
-            <div className="bg-gray-100 rounded-lg shadow-lg p-6 text-left w-full md:w-4/5">
-              <p><strong>Current Position:</strong> {currentPosition} of {queueCount}</p>
-              <p><strong>Name:</strong> {currentRequest.name}</p>
-              <p><strong>Course:</strong> {currentRequest.course}</p>
-              <p><strong>Question:</strong> {currentRequest.question}</p>
-              <p className="whitespace-nowrap overflow-hidden">
-                <strong>Submitted at:</strong> {new Date(currentRequest.createdAt).toLocaleString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  hour12: true,
-                })}
-              </p>
-            </div>
+            <Request
+              currentPosition={currentPosition}
+              queueCount={queueCount}
+              name={currentRequest.name}
+              course={currentRequest.course}
+              question={currentRequest.question}
+              createdAt={currentRequest.createdAt}
+            />
 
             <button
               onClick={handleCancel}
