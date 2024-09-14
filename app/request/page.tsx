@@ -50,50 +50,48 @@ const RequestPage = () => {
     }
   };
 
-  // Load current request, queue count, and active requests from backend
+  // Initial fetch for queue data and pusher setup
   useEffect(() => {
-    // Initialize Pusher client
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     });
 
-    // Subscribe to the queue channel
     const channel = pusher.subscribe('queue-channel');
 
-    // Listen for queue updates
     channel.bind('update-queue', async (data: { count: number }) => {
       setQueueCount(data.count); // Update the queue count when receiving Pusher updates
-      // Fetch updated queue requests from the backend whenever the queue changes
       await fetchQueueData();
     });
-
-    // Load current request from localStorage
-    const storedRequest = localStorage.getItem('currentRequest');
-    if (storedRequest) {
-      const parsedRequest = JSON.parse(storedRequest);
-      // Check if the request is still in the queue
-      const requestExists = queueRequests.some((req) => req.id === parsedRequest.id);
-
-      if (!requestExists) {
-        // If the request is no longer in the queue, remove it from localStorage and reset state
-        localStorage.removeItem('currentRequest');
-        setCurrentRequest(null);
-      } else {
-        // If the request still exists, set it as the current request
-        setCurrentRequest(parsedRequest);
-      }
-    }
 
     // Fetch queue data initially
     fetchQueueData().finally(() => setIsRequestLoading(false));
 
-    // Cleanup on component unmount
     return () => {
       channel.unbind_all();
       pusher.unsubscribe('queue-channel');
     };
   }, []);
 
+  // Track when queueRequests changes to check if currentRequest still exists
+  useEffect(() => {
+    const storedRequest = localStorage.getItem('currentRequest');
+  
+    if (storedRequest && !isRequestLoading) { // Ensure requests are loaded
+      const parsedRequest = JSON.parse(storedRequest);
+  
+      const requestExists = queueRequests.some((req) => {
+        return req.id.toString() === parsedRequest.id.toString();
+      });
+  
+      if (!requestExists) {
+        localStorage.removeItem('currentRequest');
+        setCurrentRequest(null);
+      } else {
+        setCurrentRequest(parsedRequest);
+      }
+    }
+  }, [queueRequests, isRequestLoading]);
+  
   // New effect to track current request and remove it when picked up
   useEffect(() => {
     if (!currentRequest) return;
@@ -108,13 +106,12 @@ const RequestPage = () => {
     // Listen for the specific request-picked event to remove the current request if it was picked up
     channel.bind('request-picked', async (data: { requestId: string }) => {
       if (currentRequest?.id === data.requestId) {
-        // If the current request matches the picked-up request, remove it from the student's screen
         setCurrentRequest(null);
         localStorage.removeItem('currentRequest');
-        await fetchQueueData(); // Fetch updated queue data to update the count correctly
+        await fetchQueueData();
 
-        // Trigger the modal to inform the student that their request was picked up
-        setIsModalOpen(true); // Open modal
+        // Show modal when request is picked up
+        setIsModalOpen(true);
       }
     });
 
