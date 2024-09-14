@@ -14,7 +14,8 @@ const Queue = () => {
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  const [modalRequest, setModalRequest] = useState<ActiveRequest | null>(null); // State for the request data in modal
+
   // Toast state
   const [showToast, setShowToast] = useState(false); // State to manage toast visibility
   const [toastMessage, setToastMessage] = useState('');
@@ -73,8 +74,11 @@ const Queue = () => {
     const data = await response.json();
   
     if (data.success) {
-      setModalMessage('Request processed successfully!'); // Set modal message
-      setIsModalOpen(true); // Show the modal
+      const processedRequest = requests.find((request) => request.id === requestId); // Find the request in the state
+      if (processedRequest) {
+        setModalRequest(processedRequest); // Set the request data in the modal
+        setIsModalOpen(true); // Show the modal
+      }
 
       // Trigger a Pusher event to notify the student that their request has been picked up
       await fetch('/api/pusher', {
@@ -149,7 +153,16 @@ const Queue = () => {
 
         {/* Modal to display success or failure messages */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Request Status">
-          <p>{modalMessage}</p>
+          {/* Display the request details inside the modal if available */}
+          {modalRequest && (
+            <Request
+              name={modalRequest.name}
+              course={modalRequest.course}
+              question={modalRequest.question}
+              createdAt={modalRequest.createdAt}
+              hasShadow={false}
+            />
+          )}
         </Modal>
       </div>
     </>
