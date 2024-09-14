@@ -11,9 +11,9 @@ const RequestPage = () => {
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
-  const [currentRequest, setCurrentRequest] = useState<{ 
-    name: string; 
-    course: string; 
+  const [currentRequest, setCurrentRequest] = useState<{
+    name: string;
+    course: string;
     question: string;
     id: string;
     createdAt: string;
@@ -76,7 +76,18 @@ const RequestPage = () => {
     // Load current request from localStorage
     const storedRequest = localStorage.getItem('currentRequest');
     if (storedRequest) {
-      setCurrentRequest(JSON.parse(storedRequest));
+      const parsedRequest = JSON.parse(storedRequest);
+      // Check if the request is still in the queue
+      const requestExists = queueRequests.some((req) => req.id === parsedRequest.id);
+
+      if (!requestExists) {
+        // If the request is no longer in the queue, remove it from localStorage and reset state
+        localStorage.removeItem('currentRequest');
+        setCurrentRequest(null);
+      } else {
+        // If the request still exists, set it as the current request
+        setCurrentRequest(parsedRequest);
+      }
     }
 
     // Fetch queue data initially
