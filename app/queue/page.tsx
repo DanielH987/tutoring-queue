@@ -141,7 +141,7 @@ const Queue = () => {
                   name={request.name}
                   course={request.course}
                   question={request.question}
-                  createdAt={new Date(request.createdAt).toISOString()} // Convert Date to string
+                  createdAt={request.createdAt}
                   hasShadow={false}
                 />
               </li>
@@ -161,6 +161,7 @@ const Queue = () => {
               question={modalRequest.question}
               createdAt={modalRequest.createdAt}
               hasShadow={false}
+              hasBox={false}
             />
           )}
         </Modal>
