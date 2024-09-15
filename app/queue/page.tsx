@@ -95,8 +95,13 @@ const Queue = () => {
       fetchRequests(); // Update the requests
     } else {
       setToastMessage('Failed to process request');
-      setShowToast(true); // Show modal for error message
+      setShowToast(true); // Show toast for error message
     }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalRequest(null); // Clear the request from the modal
   };
   
   // Display a loading state until session data is available
@@ -152,17 +157,26 @@ const Queue = () => {
         )}
 
         {/* Modal to display success or failure messages */}
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Request Status">
+        <Modal isOpen={isModalOpen} onClose={closeModal} title="Request Status">
           {/* Display the request details inside the modal if available */}
           {modalRequest && (
-            <Request
-              name={modalRequest.name}
-              course={modalRequest.course}
-              question={modalRequest.question}
-              createdAt={modalRequest.createdAt}
-              hasShadow={false}
-              hasBox={false}
-            />
+            <div className="relative">
+              <Request
+                name={modalRequest.name}
+                course={modalRequest.course}
+                question={modalRequest.question}
+                createdAt={modalRequest.createdAt}
+                hasShadow={false}
+                hasBox={false}
+              />
+              {/* Finish Help button positioned at the bottom-right of the modal */}
+              <button
+                onClick={closeModal}
+                className="custom-bg-color text-white py-3 px-4 rounded-lg hover:bg-red-900 transition-colors duration-300 absolute bottom-0 right-0 mb-4 mr-4"
+              >
+                Finish Help
+              </button>
+            </div>
           )}
         </Modal>
       </div>
