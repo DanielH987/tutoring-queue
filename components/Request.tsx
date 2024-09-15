@@ -8,6 +8,7 @@ interface RequestProps {
   question: string;
   createdAt: string;
   hasShadow?: boolean; // Optional prop to toggle shadow
+  hasBox?: boolean; // Optional prop to toggle box border
 }
 
 const Request: React.FC<RequestProps> = ({
@@ -18,12 +19,17 @@ const Request: React.FC<RequestProps> = ({
   question,
   createdAt,
   hasShadow = true,
+  hasBox = true,
 }) => {
   return (
     <div
-      className={`bg-gray-100 rounded-lg p-6 text-left w-full md:w-4/5 ${
-        hasShadow ? 'shadow-lg' : ''
-      }`}
+      className={
+        `
+          rounded-lg p-6 text-left w-full md:w-4/5 
+          ${hasShadow ? 'shadow-lg' : ''} 
+          ${hasBox ? 'bg-gray-100' : ''}
+        `
+      }
     >
       {/* Only display position and queue count if both are provided */}
       {currentPosition !== undefined && queueCount !== undefined && (
