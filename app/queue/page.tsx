@@ -16,6 +16,9 @@ const Queue = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalRequest, setModalRequest] = useState<ActiveRequest | null>(null); // State for the request data in modal
 
+  // Time tracking state
+  const [startTime, setStartTime] = useState<number | null>(null); // Store start time for measuring help time
+
   // Toast state
   const [showToast, setShowToast] = useState(false); // State to manage toast visibility
   const [toastMessage, setToastMessage] = useState('');
@@ -56,29 +59,13 @@ const Queue = () => {
     }
   }, [status]);
 
-  const processRequest = async (requestId: string, helpTime: number) => {
-    const tutorId = session?.user.id; // Get the logged-in tutor's ID
-  
-    const response = await fetch('/api/process-request', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        requestId,
-        tutorId,
-        helpTime, // You can capture help time as part of your logic
-      }),
-    });
-  
-    const data = await response.json();
-  
-    if (data.success) {
-      const processedRequest = requests.find((request) => request.id === requestId); // Find the request in the state
-      if (processedRequest) {
-        setModalRequest(processedRequest); // Set the request data in the modal
-        setIsModalOpen(true); // Show the modal
-      }
+  // Trigger when the tutor clicks "Help" but don't process the request yet
+  const startHelpSession = async (requestId: string) => {
+    const processedRequest = requests.find((request) => request.id === requestId); // Find the request in the state
+    if (processedRequest) {
+      setModalRequest(processedRequest); // Set the request data in the modal
+      setIsModalOpen(true); // Show the modal
+      setStartTime(Date.now()); // Record the start time when modal opens
 
       // Trigger a Pusher event to notify the student that their request has been picked up
       await fetch('/api/pusher', {
@@ -91,12 +78,46 @@ const Queue = () => {
           data: { requestId }, // Include the request ID in the event data
         }),
       });
-  
-      fetchRequests(); // Update the requests
-    } else {
-      setToastMessage('Failed to process request');
-      setShowToast(true); // Show modal for error message
     }
+  };
+
+  // When the tutor clicks "Finish Help," we process the request and calculate the help time
+  const finishHelp = async () => {
+    if (modalRequest && startTime) {
+      const endTime = Date.now();
+      const helpTimeInSeconds = Math.round((endTime - startTime) / 1000); // Calculate help time in seconds
+
+      const tutorId = session?.user.id; // Get the logged-in tutor's ID
+
+      // Make the API call to process the request with the calculated help time
+      const response = await fetch('/api/process-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requestId: modalRequest.id,
+          tutorId,
+          helpTime: helpTimeInSeconds,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        fetchRequests(); // Update the requests list after processing
+        closeModal(); // Close the modal after processing
+      } else {
+        setToastMessage('Failed to process request');
+        setShowToast(true); // Show toast for error message
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalRequest(null); // Clear the request from the modal
+    setStartTime(null); // Clear the start time when the modal is closed
   };
   
   // Display a loading state until session data is available
@@ -132,7 +153,7 @@ const Queue = () => {
                   {/* Add the button in the top-right corner */}
                   <button
                     className="custom-bg-color text-white py-2 px-4 rounded-lg hover:bg-red-900 transition-colors duration-300"
-                    onClick={() => processRequest(request.id, 30)} // Example help time of 30 minutes
+                    onClick={() => startHelpSession(request.id)} // Open the modal and start help session
                   >
                     Help
                   </button>
@@ -152,17 +173,26 @@ const Queue = () => {
         )}
 
         {/* Modal to display success or failure messages */}
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Request Status">
+        <Modal isOpen={isModalOpen} onClose={closeModal} title="Request Status">
           {/* Display the request details inside the modal if available */}
           {modalRequest && (
-            <Request
-              name={modalRequest.name}
-              course={modalRequest.course}
-              question={modalRequest.question}
-              createdAt={modalRequest.createdAt}
-              hasShadow={false}
-              hasBox={false}
-            />
+            <div className="relative">
+              <Request
+                name={modalRequest.name}
+                course={modalRequest.course}
+                question={modalRequest.question}
+                createdAt={modalRequest.createdAt}
+                hasShadow={false}
+                hasBox={false}
+              />
+              {/* Finish Help button positioned at the bottom-right of the modal */}
+              <button
+                onClick={finishHelp} // Call finishHelp on click
+                className="custom-bg-color text-white py-3 px-4 rounded-lg hover:bg-red-900 transition-colors duration-300 absolute bottom-0 right-0 mb-4 mr-4"
+              >
+                Finish Help
+              </button>
+            </div>
           )}
         </Modal>
       </div>
