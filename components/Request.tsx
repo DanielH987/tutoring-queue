@@ -1,14 +1,15 @@
 import React from 'react';
+import clsx from 'clsx';
 
 interface RequestProps {
-  currentPosition?: number | null; // Optional
-  queueCount?: number | null; // Optional
+  currentPosition?: number | null;
+  queueCount?: number | null;
   name: string;
   course: string;
   question: string;
   createdAt: string;
-  hasShadow?: boolean; // Optional prop to toggle shadow
-  hasBox?: boolean; // Optional prop to toggle box border
+  hasShadow?: boolean;
+  hasBox?: boolean;
 }
 
 const Request: React.FC<RequestProps> = ({
@@ -23,15 +24,12 @@ const Request: React.FC<RequestProps> = ({
 }) => {
   return (
     <div
-      className={
-        `
-          rounded-lg p-6 text-left w-full md:w-4/5 
-          ${hasShadow ? 'shadow-lg' : ''} 
-          ${hasBox ? 'bg-gray-100' : ''}
-        `
-      }
+      className={clsx(
+        'rounded-lg p-6 text-left w-full md:w-4/5',
+        hasShadow && 'shadow-lg',
+        hasBox && 'bg-gray-100'
+      )}
     >
-      {/* Only display position and queue count if both are provided */}
       {currentPosition !== undefined && queueCount !== undefined && (
         <p>
           <strong>Current Position:</strong> {currentPosition} of {queueCount}
