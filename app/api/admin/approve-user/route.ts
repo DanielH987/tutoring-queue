@@ -1,18 +1,25 @@
 // app/api/admin/approve-user/route.ts
-import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
+import prisma from '@/prisma/client';
 
 export async function POST(req: Request) {
-  const { userId, action } = await req.json();
-  
-  const status = action === 'APPROVE' ? 'APPROVED' : 'REJECTED';
+  try {
+    const { userId, action } = await req.json();
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: { status },
-  });
+    if (action === 'APPROVE') {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { status: 'APPROVED' },
+      });
+    } else if (action === 'REJECT') {
+      await prisma.user.delete({
+        where: { id: userId },
+      });
+    }
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error approving/rejecting user:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
