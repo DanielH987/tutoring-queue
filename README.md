@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tutoring Queue Application
 
-## Getting Started
+Welcome to the **Tutoring Queue Application**, a web-based system designed to help manage the flow of students requesting tutoring assistance. The app allows students to submit questions, get placed into a queue, and receive help from tutors in real-time. Tutors can view, pick up, and resolve requests while tracking metrics such as average and median wait times.
 
-First, run the development server:
+## Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [Contact](#contact)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The **Tutoring Queue Application** facilitates the interaction between students and tutors by managing a queue system for tutoring sessions. Students can submit their names, courses, and questions, and tutors can pick up these requests, help students, and mark the requests as completed. The app also provides tutors with performance metrics such as average wait times and the duration of tutoring sessions.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This app is designed with simplicity and scalability in mind, using modern tools and a clean architecture to ensure it can handle multiple users and grow over time.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Real-time queue management**: Students are placed into a queue when they submit a request for tutoring, and tutors can view all active requests in real-time.
+- **Tutor profiles**: Tutors can see all the requests they have picked up, with a detailed history of past requests.
+- **Performance metrics**: Tutors can view helpful statistics like average wait time, help time, and medians.
+- **Admin management**: Admins can approve pending user accounts, manage user roles, and suspend or delete accounts.
+- **Responsive design**: The application is designed to work on both desktop and mobile devices.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Next.js** (with `app/` directory structure) for the frontend and backend
+- **TypeScript** for type safety
+- **MongoDB** as the database, managed through **Prisma**
+- **Tailwind CSS** for styling
+- **Pusher** for real-time updates via WebSockets
+- **NextAuth** for authentication and role management
+- **Prisma ORM** for database interaction
 
-## Deploy on Vercel
+## Project Structure
+- `app/`
+  - `api/` - API routes for requests, user management, etc.
+  - `components/` - Reusable components (e.g., Request, Modal)
+  - `tutor/` - Pages related to tutor views (e.g., profile, requests)
+  - `admin/` - Admin panel views
+  - `layout.tsx` - Global layout with shared metadata
+  - `page.tsx` - Main landing page
+- `prisma/`
+  - `schema.prisma` - Prisma schema for MongoDB database
+- `public/`
+  - `favicon.ico` - Favicon for the app
+  - `logo.png` - Branding assets
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+We welcome contributions to this project! While this app is currently built with a specific goal in mind, there's always room for improvement, new features, and bug fixes. Here's how you can contribute:
+
+1. **Fork the repository** to your own GitHub account.
+2. **Clone the repository** to your local machine:
+   ```bash
+   git clone https://github.com/yourusername/tutoring-queue-app.git
+3. **Create a new branch** for your feature or bug fix:
+    ```bash
+    git checkout -b your-branch-name
+4. **Make your changes** and test thoroughly.
+5. **Commit your changes:**
+    ```bash
+    git commit -m "Add new feature or fix"
+6. **Push to your branch:**
+    ```bash
+    git push origin your-branch-name
+7. **Create a pull request** from your branch into the main branch of this repository.
+
+## Contact
+If you have any questions, suggestions, or want to discuss the project further, feel free to reach out:
+
+- Email: hootinid@gmail.com
+- GitHub Issues: Open an issue if you encounter any bugs or have feature requests.
