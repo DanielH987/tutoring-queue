@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
+import { StatusType } from '@/app/types';
 import prisma from '@/prisma/client';
 
 export async function POST(req: Request) {
   try {
     const { userId, action } = await req.json();
 
-    const newStatus = action === 'SUSPEND' ? 'SUSPENDED' : 'APPROVED';
+    const newStatus = action === 'SUSPEND' ? StatusType.SUSPENDED : StatusType.APPROVED;
 
     await prisma.user.update({
       where: { id: userId },
