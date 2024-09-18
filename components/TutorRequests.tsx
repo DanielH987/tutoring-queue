@@ -29,8 +29,8 @@ export default function TutorRequests({ processedRequests, totalPages, currentPa
               <td className="border px-4 py-2">{request.studentName}</td>
               <td className="border px-4 py-2">{request.course}</td>
               <td className="border px-4 py-2">{request.question}</td>
-              <td className="border px-4 py-2">{request.waitTime}</td>
-              <td className="border px-4 py-2">{request.helpTime}</td>
+              <td className="border px-4 py-2">{(request.waitTime / 60).toFixed(2)}</td>
+              <td className="border px-4 py-2">{(request.helpTime / 60).toFixed(2)}</td>
               <td className="border px-4 py-2">{new Date(request.createdAt).toLocaleString()}</td>
             </tr>
           ))}
