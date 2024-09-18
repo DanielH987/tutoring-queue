@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react'; // Use useSession hook for client-side session
 import { useRouter } from 'next/navigation'; // Use useRouter for client-side navigation
+import { FaSyncAlt } from 'react-icons/fa'; // Import the refresh icon from FontAwesome (or your icon library)
 
 const AdminApproval = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -86,6 +87,18 @@ const AdminApproval = () => {
     setAllUsers(updatedUsers); // Update the user role in the list
   };
 
+  const refreshPendingUsers = async () => {
+    const pendingResponse = await fetch('/api/admin/pending-users');
+    const pendingData = await pendingResponse.json();
+    setPendingUsers(pendingData); // Update pending users
+  };
+
+  const refreshAllUsers = async () => {
+    const allUsersResponse = await fetch('/api/admin/all-users');
+    const allUsersData = await allUsersResponse.json();
+    setAllUsers(allUsersData); // Update all users
+  };
+
   // Render loading state while session is being fetched
   if (status === 'loading') {
     return (
@@ -98,7 +111,15 @@ const AdminApproval = () => {
 
   return (
     <div className="p-6 text-left max-w-screen-lg mx-auto">
-      <h1 className="text-3xl font-bold mb-4 mt-4">Pending User Approvals</h1>
+      {/* Pending Users Section */}
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Pending User Approvals</h1>
+        <FaSyncAlt
+          className="text-gray-600 hover:text-gray-700 cursor-pointer"
+          size={20}
+          onClick={refreshPendingUsers} // Call the refresh function when the icon is clicked
+        />
+      </div>
       {pendingUsers.length > 0 ? (
         <ul className="space-y-4">
           {pendingUsers.map((user) => (
@@ -127,7 +148,15 @@ const AdminApproval = () => {
         <p>No pending users for approval.</p>
       )}
 
-      <h1 className="text-3xl font-bold mb-4 mt-4">All Users</h1>
+      {/* All Users Section */}
+      <div className="flex justify-between items-center mt-8 mb-4">
+        <h1 className="text-3xl font-bold">All Users</h1>
+        <FaSyncAlt
+          className="text-gray-600 hover:text-gray-700 cursor-pointer"
+          size={20}
+          onClick={refreshAllUsers} // Call the refresh function when the icon is clicked
+        />
+      </div>
       {allUsers.length > 0 ? (
         <ul className="space-y-4">
           {allUsers.map((user) => (
