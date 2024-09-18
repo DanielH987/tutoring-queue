@@ -1,8 +1,9 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/config/authOptions';
 import prisma from '@/prisma/client';
 import TutorRequests from '@/components/TutorRequests';
+import { StatusType } from '../types'; // Import your custom StatusType enum
 
 export default async function TutorProfile({ searchParams }: { searchParams: { page: string } }) {
   const session = await getServerSession(authOptions);
@@ -31,13 +32,35 @@ export default async function TutorProfile({ searchParams }: { searchParams: { p
     orderBy: {
       createdAt: 'desc',
     },
-    skip: (page - 1) * pageSize, // Skip records based on the current page
-    take: pageSize, // Fetch only 10 records
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    include: {
+      tutor: {
+        include: {
+          ProcessedRequest: true, // Include the processed requests for the tutor
+        },
+      },
+    },
   });
 
+  // Map tutor status and convert Date fields to strings
+  const mappedProcessedRequests = processedRequests.map(request => ({
+    ...request,
+    tutor: {
+      ...request.tutor,
+      status: request.tutor.status as StatusType, // Explicitly cast or map to custom StatusType
+      createdAt: request.tutor.createdAt.toISOString(), // Convert Date to string
+      ProcessedRequest: request.tutor.ProcessedRequest.map(pr => ({
+        ...pr,
+        createdAt: pr.createdAt.toISOString(), // Convert Date to string in ProcessedRequest
+      })),
+    },
+    createdAt: request.createdAt.toISOString(), // Convert Date to string in the main object
+  }));
+
   // Calculate metrics (Convert times from seconds to minutes)
-  const waitTimesInMinutes = processedRequests.map((req) => Math.round(req.waitTime / 60));
-  const helpTimesInMinutes = processedRequests.map((req) => Math.round(req.helpTime / 60));
+  const waitTimesInMinutes = mappedProcessedRequests.map((req) => Math.round(req.waitTime / 60));
+  const helpTimesInMinutes = mappedProcessedRequests.map((req) => Math.round(req.helpTime / 60));
 
   const calculateAverage = (times: number[]) => (times.length === 0 ? 0 : Math.round(times.reduce((sum, time) => sum + time, 0) / times.length));
 
@@ -69,7 +92,7 @@ export default async function TutorProfile({ searchParams }: { searchParams: { p
       </div>
 
       {/* Pass data to the client component */}
-      <TutorRequests processedRequests={processedRequests} totalPages={totalPages} currentPage={page} />
+      <TutorRequests processedRequests={mappedProcessedRequests} totalPages={totalPages} currentPage={page} />
     </div>
   );
 }
