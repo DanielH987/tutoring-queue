@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { RequestType } from '../types';
+import { ActiveRequestType } from '../types';
 import Request from '@/components/Request'; // Import the new Request component
 import Modal from '@/components/Modal';
 import Pusher from 'pusher-js';
 
 const RequestPage = () => {
   const [queueCount, setQueueCount] = useState<number | null>(null); // Queue count starts as null to detect loading state
-  const [queueRequests, setQueueRequests] = useState<RequestType[]>([]); // To store all active requests
+  const [queueRequests, setQueueRequests] = useState<ActiveRequestType[]>([]); // To store all active requests
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [question, setQuestion] = useState('');
-  const [currentRequest, setCurrentRequest] = useState<RequestType | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<ActiveRequestType | null>(null);
   const [isRequestLoading, setIsRequestLoading] = useState(true); // Loading state for request area
 
   // Modal state for when a request is picked up
