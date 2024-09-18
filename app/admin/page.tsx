@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react'; // Use useSession hook for client-side session
 import { useRouter } from 'next/navigation'; // Use useRouter for client-side navigation
 import { FaSyncAlt } from 'react-icons/fa'; // Import the refresh icon from FontAwesome (or your icon library)
+import { UserType, StatusType } from '../types';
 
 const AdminApproval = () => {
-  const [pendingUsers, setPendingUsers] = useState([]);
-  const [allUsers, setAllUsers] = useState([]); // To store all users
+  const [pendingUsers, setPendingUsers] = useState<UserType[]>([]);
+  const [allUsers, setAllUsers] = useState<UserType[]>([]); // To store all users
   const [isPendingUsersLoading, setIsPendingUsersLoading] = useState(false); // For controlling the animation on pending users
   const [isAllUsersLoading, setIsAllUsersLoading] = useState(false); // For controlling the animation on all users
   const { data: session, status } = useSession(); // Get session data from NextAuth
@@ -18,7 +19,7 @@ const AdminApproval = () => {
     if (status === 'loading') return;
 
     // If user is not logged in or not an admin, redirect to the home page
-    if (!session || session.user.role !== 'admin') {
+    if (!session || session?.user?.role !== 'admin') {
       router.push('/'); // Client-side redirect
     }
 
@@ -34,12 +35,12 @@ const AdminApproval = () => {
       setAllUsers(allUsersData);
     };
 
-    if (session?.user.role === 'admin') {
+    if (session?.user?.role === 'admin') {
       fetchUsers();
     }
   }, [session, status, router]);
 
-  const handleApproval = async (userId, action) => {
+  const handleApproval = async (userId: string , action: string) => {
     await fetch('/api/admin/approve-user', {
       method: 'POST',
       headers: {
@@ -50,7 +51,7 @@ const AdminApproval = () => {
     setPendingUsers((prev) => prev.filter((user) => user.id !== userId)); // Remove from list
   };
 
-  const handleDeleteUser = async (userId) => {
+  const handleDeleteUser = async (userId: string) => {
     await fetch(`/api/admin/delete-user`, {
       method: 'DELETE',
       headers: {
@@ -61,7 +62,7 @@ const AdminApproval = () => {
     setAllUsers((prev) => prev.filter((user) => user.id !== userId)); // Remove from list
   };
 
-  const handleSuspendUser = async (userId, action) => {
+  const handleSuspendUser = async (userId: string, action: 'SUSPEND' | 'UNSUSPEND') => {
     await fetch(`/api/admin/suspend-user`, {
       method: 'POST',
       headers: {
@@ -70,12 +71,12 @@ const AdminApproval = () => {
       body: JSON.stringify({ userId, action }),
     });
     const updatedUsers = allUsers.map((user) => 
-      user.id === userId ? { ...user, status: action === 'SUSPEND' ? 'SUSPENDED' : 'APPROVED' } : user
+      user.id === userId ? { ...user, status: action === 'SUSPEND' ? 'SUSPENDED' as StatusType : 'APPROVED' as StatusType } : user
     );
     setAllUsers(updatedUsers); // Update the user status in the list
   };
 
-  const handleChangeRole = async (userId, newRole) => {
+  const handleChangeRole = async (userId: string, newRole: string) => {
     await fetch(`/api/admin/change-role`, {
       method: 'POST',
       headers: {
