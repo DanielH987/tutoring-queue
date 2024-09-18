@@ -131,34 +131,36 @@ const AdminApproval = () => {
       {allUsers.length > 0 ? (
         <ul className="space-y-4">
           {allUsers.map((user) => (
-            <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Role:</strong> {user.role}</p>
-                <p><strong>Status:</strong> {user.status}</p>
-                <div className="flex space-x-4 mt-4">
-                  <button
-                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                    onClick={() => handleDeleteUser(user.id)}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-300"
-                    onClick={() => handleSuspendUser(user.id, user.status === 'SUSPENDED' ? 'UNSUSPEND' : 'SUSPEND')}
-                  >
-                    {user.status === 'SUSPENDED' ? 'Unsuspend' : 'Suspend'}
-                  </button>
-                  <select
-                    className="bg-gray-200 text-black py-2 px-4 rounded-lg"
-                    value={user.role}
-                    onChange={(e) => handleChangeRole(user.id, e.target.value)}
-                  >
-                    <option value="tutor">Tutor</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-            </li>          
+            user.status !== 'PENDING' && (
+              <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
+                  <p><strong>Name:</strong> {user.name}</p>
+                  <p><strong>Email:</strong> {user.email}</p>
+                  <p><strong>Role:</strong> {user.role}</p>
+                  <p><strong>Status:</strong> {user.status}</p>
+                  <div className="flex space-x-4 mt-4">
+                    <button
+                      className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-300"
+                      onClick={() => handleSuspendUser(user.id, user.status === 'SUSPENDED' ? 'UNSUSPEND' : 'SUSPEND')}
+                    >
+                      {user.status === 'SUSPENDED' ? 'Unsuspend' : 'Suspend'}
+                    </button>
+                    <select
+                      className="bg-gray-200 text-black py-2 px-4 rounded-lg"
+                      value={user.role}
+                      onChange={(e) => handleChangeRole(user.id, e.target.value)}
+                    >
+                      <option value="tutor">Tutor</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+              </li>          
+            )
           ))}
         </ul>
       ) : (
