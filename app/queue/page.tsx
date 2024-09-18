@@ -162,7 +162,7 @@ const Queue = () => {
                   name={request.name}
                   course={request.course}
                   question={request.question}
-                  createdAt={request.createdAt}
+                  createdAt={request.createdAt.toISOString()}
                   hasShadow={false}
                 />
               </li>
@@ -181,7 +181,7 @@ const Queue = () => {
                 name={modalRequest.name}
                 course={modalRequest.course}
                 question={modalRequest.question}
-                createdAt={modalRequest.createdAt}
+                createdAt={modalRequest.createdAt.toISOString()}
                 hasShadow={false}
                 hasBox={false}
               />
