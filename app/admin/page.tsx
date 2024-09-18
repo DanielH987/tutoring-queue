@@ -8,6 +8,8 @@ import { FaSyncAlt } from 'react-icons/fa'; // Import the refresh icon from Font
 const AdminApproval = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]); // To store all users
+  const [isPendingUsersLoading, setIsPendingUsersLoading] = useState(false); // For controlling the animation on pending users
+  const [isAllUsersLoading, setIsAllUsersLoading] = useState(false); // For controlling the animation on all users
   const { data: session, status } = useSession(); // Get session data from NextAuth
   const router = useRouter(); // To redirect the user
 
@@ -88,25 +90,29 @@ const AdminApproval = () => {
   };
 
   const refreshPendingUsers = async () => {
+    setIsPendingUsersLoading(true); // Start spinning animation
     const pendingResponse = await fetch('/api/admin/pending-users');
     const pendingData = await pendingResponse.json();
-    setPendingUsers(pendingData); // Update pending users
+    setPendingUsers(pendingData);
+    setIsPendingUsersLoading(false); // Stop spinning animation
   };
 
   const refreshAllUsers = async () => {
+    setIsAllUsersLoading(true); // Start spinning animation
     const allUsersResponse = await fetch('/api/admin/all-users');
     const allUsersData = await allUsersResponse.json();
-    setAllUsers(allUsersData); // Update all users
+    setAllUsers(allUsersData);
+    setIsAllUsersLoading(false); // Stop spinning animation
   };
 
   // Render loading state while session is being fetched
   if (status === 'loading') {
     return (
       <div className="p-6 text-left max-w-screen-lg mx-auto">
-      <h1 className="text-3xl font-bold mb-4 mt-4">Admin Panel</h1>
+        <h1 className="text-3xl font-bold mb-4 mt-4">Admin Panel</h1>
         <p>Loading...</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -115,7 +121,7 @@ const AdminApproval = () => {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Pending User Approvals</h1>
         <FaSyncAlt
-          className="text-gray-600 hover:text-gray-700 cursor-pointer"
+          className={`text-gray-600 hover:text-gray-700 cursor-pointer ${isPendingUsersLoading ? 'animate-spin' : ''}`}
           size={20}
           onClick={refreshPendingUsers} // Call the refresh function when the icon is clicked
         />
@@ -124,24 +130,24 @@ const AdminApproval = () => {
         <ul className="space-y-4">
           {pendingUsers.map((user) => (
             <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Role:</strong> {user.role}</p>
-                <div className="flex space-x-4 mt-4">
-                  <button
-                    className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300"
-                    onClick={() => handleApproval(user.id, 'APPROVE')}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                    onClick={() => handleApproval(user.id, 'REJECT')}
-                  >
-                    Reject
-                  </button>
-                </div>
-            </li>          
+              <p><strong>Name:</strong> {user.name}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Role:</strong> {user.role}</p>
+              <div className="flex space-x-4 mt-4">
+                <button
+                  className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-300"
+                  onClick={() => handleApproval(user.id, 'APPROVE')}
+                >
+                  Approve
+                </button>
+                <button
+                  className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                  onClick={() => handleApproval(user.id, 'REJECT')}
+                >
+                  Reject
+                </button>
+              </div>
+            </li>
           ))}
         </ul>
       ) : (
@@ -152,7 +158,7 @@ const AdminApproval = () => {
       <div className="flex justify-between items-center mt-8 mb-4">
         <h1 className="text-3xl font-bold">All Users</h1>
         <FaSyncAlt
-          className="text-gray-600 hover:text-gray-700 cursor-pointer"
+          className={`text-gray-600 hover:text-gray-700 cursor-pointer ${isAllUsersLoading ? 'animate-spin' : ''}`}
           size={20}
           onClick={refreshAllUsers} // Call the refresh function when the icon is clicked
         />
@@ -162,33 +168,33 @@ const AdminApproval = () => {
           {allUsers.map((user) => (
             user.status !== 'PENDING' && (
               <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
-                  <p><strong>Name:</strong> {user.name}</p>
-                  <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>Role:</strong> {user.role}</p>
-                  <p><strong>Status:</strong> {user.status}</p>
-                  <div className="flex space-x-4 mt-4">
-                    <button
-                      className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-300"
-                      onClick={() => handleSuspendUser(user.id, user.status === 'SUSPENDED' ? 'UNSUSPEND' : 'SUSPEND')}
-                    >
-                      {user.status === 'SUSPENDED' ? 'Unsuspend' : 'Suspend'}
-                    </button>
-                    <select
-                      className="bg-gray-200 text-black py-2 px-4 rounded-lg"
-                      value={user.role}
-                      onChange={(e) => handleChangeRole(user.id, e.target.value)}
-                    >
-                      <option value="tutor">Tutor</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </div>
-              </li>          
+                <p><strong>Name:</strong> {user.name}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Role:</strong> {user.role}</p>
+                <p><strong>Status:</strong> {user.status}</p>
+                <div className="flex space-x-4 mt-4">
+                  <button
+                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                    onClick={() => handleDeleteUser(user.id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-300"
+                    onClick={() => handleSuspendUser(user.id, user.status === 'SUSPENDED' ? 'UNSUSPEND' : 'SUSPEND')}
+                  >
+                    {user.status === 'SUSPENDED' ? 'Unsuspend' : 'Suspend'}
+                  </button>
+                  <select
+                    className="bg-gray-200 text-black py-2 px-4 rounded-lg"
+                    value={user.role}
+                    onChange={(e) => handleChangeRole(user.id, e.target.value)}
+                  >
+                    <option value="tutor">Tutor</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </li>
             )
           ))}
         </ul>
