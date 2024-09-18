@@ -35,9 +35,9 @@ export default async function TutorProfile({ searchParams }: { searchParams: { p
     take: pageSize, // Fetch only 10 records
   });
 
-  // Calculate metrics
-  const waitTimes = processedRequests.map((req) => req.waitTime);
-  const helpTimes = processedRequests.map((req) => req.helpTime);
+  // Calculate metrics (Convert times from seconds to minutes)
+  const waitTimesInMinutes = processedRequests.map((req) => Math.round(req.waitTime / 60));
+  const helpTimesInMinutes = processedRequests.map((req) => Math.round(req.helpTime / 60));
 
   const calculateAverage = (times: number[]) => (times.length === 0 ? 0 : Math.round(times.reduce((sum, time) => sum + time, 0) / times.length));
 
@@ -48,10 +48,10 @@ export default async function TutorProfile({ searchParams }: { searchParams: { p
     return sorted.length % 2 === 0 ? Math.round((sorted[middleIndex - 1] + sorted[middleIndex]) / 2) : sorted[middleIndex];
   };
 
-  const averageWaitTime = calculateAverage(waitTimes);
-  const averageHelpTime = calculateAverage(helpTimes);
-  const medianWaitTime = calculateMedian(waitTimes);
-  const medianHelpTime = calculateMedian(helpTimes);
+  const averageWaitTime = calculateAverage(waitTimesInMinutes);
+  const averageHelpTime = calculateAverage(helpTimesInMinutes);
+  const medianWaitTime = calculateMedian(waitTimesInMinutes);
+  const medianHelpTime = calculateMedian(helpTimesInMinutes);
 
   return (
     <div className="container mx-auto py-6">
