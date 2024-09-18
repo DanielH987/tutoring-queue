@@ -1,8 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { ProcessedRequestType } from '@/app/types';
 
-export default function TutorRequests({ processedRequests, totalPages, currentPage }: { processedRequests: any[], totalPages: number, currentPage: number }) {
+export default function TutorRequests({ processedRequests, totalPages, currentPage }: { processedRequests: ProcessedRequestType[], totalPages: number, currentPage: number }) {
   const router = useRouter();
 
   const goToPage = (page: number) => {
