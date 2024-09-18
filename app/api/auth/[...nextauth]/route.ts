@@ -36,6 +36,10 @@ export const authOptions = {
           throw new Error('Your account has been rejected');
         }
 
+        if (user.status === 'SUSPENDED') {
+          throw new Error('Your account has been suspended');
+        }
+
         // Compare the password using bcrypt
         const isValidPassword = await compare(credentials.password, user.password);
         if (!isValidPassword) {
