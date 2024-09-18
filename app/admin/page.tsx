@@ -108,7 +108,7 @@ const AdminApproval = () => {
   // Render loading state while session is being fetched
   if (status === 'loading') {
     return (
-      <div className="p-6 text-left max-w-screen-lg mx-auto">
+      <div className="p-6 text-left max-w-screen-lg mx-auto min-h-screen">
         <h1 className="text-3xl font-bold mb-4 mt-4">Admin Panel</h1>
         <p>Loading...</p>
       </div>
@@ -116,7 +116,7 @@ const AdminApproval = () => {
   }
 
   return (
-    <div className="p-6 text-left max-w-screen-lg mx-auto">
+    <div className="p-6 text-left max-w-screen-lg mx-auto min-h-screen relative pb-20">
       {/* Pending Users Section */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Pending User Approvals</h1>
@@ -127,7 +127,7 @@ const AdminApproval = () => {
         />
       </div>
       {pendingUsers.length > 0 ? (
-        <ul className="space-y-4">
+        <ul className="space-y-4 overflow-y-auto">
           {pendingUsers.map((user) => (
             <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
               <p><strong>Name:</strong> {user.name}</p>
@@ -164,7 +164,7 @@ const AdminApproval = () => {
         />
       </div>
       {allUsers.length > 0 ? (
-        <ul className="space-y-4">
+        <ul className="space-y-4 overflow-y-auto">
           {allUsers.map((user) => (
             user.status !== 'PENDING' && (
               <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
