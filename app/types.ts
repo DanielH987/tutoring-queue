@@ -15,7 +15,7 @@ export type ProcessedRequestType = {
     waitTime: number;
     helpTime: number;
     createdAt: string;
-    tutor: UserType; // Reference to the User who handled the request
+    tutor?: UserType; // Reference to the User who handled the request
 };
 
 export type UserType = {
@@ -26,7 +26,7 @@ export type UserType = {
     role: string;
     status: StatusType;
     createdAt: string;
-    ProcessedRequest: ProcessedRequestType[]; // List of processed requests handled by the user
+    ProcessedRequest?: ProcessedRequestType[]; // List of processed requests handled by the user
 };
 
 export enum StatusType {
