@@ -142,7 +142,7 @@ const AdminApproval = () => {
       {pendingUsers.length > 0 ? (
         <ul className="space-y-4 overflow-y-auto">
           {pendingUsers.map((user) => (
-            <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md dark:bg-gray-800">
               <p><strong>Name:</strong> {user.name}</p>
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>Role:</strong> {user.role}</p>
@@ -180,7 +180,7 @@ const AdminApproval = () => {
         <ul className="space-y-4 overflow-y-auto">
           {allUsers.map((user) => (
             user.status !== 'PENDING' && (
-              <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md">
+              <li key={user.id} className="bg-gray-100 p-4 rounded-lg shadow-md dark:bg-gray-800">
                 <p><strong>Name:</strong> {user.name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
                 <p><strong>Role:</strong> {user.role}</p>
@@ -199,7 +199,7 @@ const AdminApproval = () => {
                     {user.status === 'SUSPENDED' ? 'Unsuspend' : 'Suspend'}
                   </button>
                   <select
-                    className="bg-gray-200 text-black py-2 px-4 rounded-lg"
+                    className="bg-gray-200 text-black py-2 px-4 rounded-lg dark:bg-gray-800 dark:text-white"
                     value={user.role}
                     onChange={(e) => handleChangeRole(user.id, e.target.value)}
                   >
