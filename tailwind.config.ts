@@ -14,6 +14,8 @@ const config: Config = {
       },
     },
   },
+  darkMode: 'media', // Enable dark mode using the 'media' strategy
   plugins: [],
 };
+
 export default config;
