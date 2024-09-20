@@ -11,6 +11,8 @@ const AdminApproval = () => {
   const [allUsers, setAllUsers] = useState<UserType[]>([]); // To store all users
   const [isPendingUsersLoading, setIsPendingUsersLoading] = useState(false); // For controlling the animation on pending users
   const [isAllUsersLoading, setIsAllUsersLoading] = useState(false); // For controlling the animation on all users
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
+  const [userToDelete, setUserToDelete] = useState<UserType | null>(null); // User selected for deletion
   const { data: session, status } = useSession(); // Get session data from NextAuth
   const router = useRouter(); // To redirect the user
 
@@ -51,15 +53,24 @@ const AdminApproval = () => {
     setPendingUsers((prev) => prev.filter((user) => user.id !== userId)); // Remove from list
   };
 
-  const handleDeleteUser = async (userId: string) => {
+  const confirmDeleteUser = (user: UserType) => {
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true); // Open the confirmation modal
+  };
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    
     await fetch(`/api/admin/delete-user`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ userId: userToDelete.id }),
     });
-    setAllUsers((prev) => prev.filter((user) => user.id !== userId)); // Remove from list
+    setAllUsers((prev) => prev.filter((user) => user.id !== userToDelete.id)); // Remove from list
+    setIsDeleteModalOpen(false); // Close the modal after deletion
+    setUserToDelete(null); // Clear the selected user
   };
 
   const handleSuspendUser = async (userId: string, action: 'SUSPEND' | 'UNSUSPEND') => {
@@ -176,7 +187,7 @@ const AdminApproval = () => {
                 <div className="flex space-x-4 mt-4">
                   <button
                     className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                    onClick={() => handleDeleteUser(user.id)}
+                    onClick={() => confirmDeleteUser(user)}
                   >
                     Delete
                   </button>
@@ -201,6 +212,30 @@ const AdminApproval = () => {
         </ul>
       ) : (
         <p>No users found.</p>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p>Are you sure you want to delete user: {userToDelete?.name}?</p>
+            <div className="flex justify-end space-x-4 mt-4">
+              <button
+                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                onClick={handleDeleteUser}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
