@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'; // Use useSession hook for client-
 import { useRouter } from 'next/navigation'; // Use useRouter for client-side navigation
 import { FaSyncAlt } from 'react-icons/fa'; // Import the refresh icon from FontAwesome (or your icon library)
 import { UserType, StatusType } from '../types';
+import Modal from '@/components/Modal'; // Use your existing Modal component
 
 const AdminApproval = () => {
   const [pendingUsers, setPendingUsers] = useState<UserType[]>([]);
@@ -215,28 +216,23 @@ const AdminApproval = () => {
       )}
 
       {/* Delete Confirmation Modal */}
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-            <p>Are you sure you want to delete user: {userToDelete?.name}?</p>
-            <div className="flex justify-end space-x-4 mt-4">
-              <button
-                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300"
-                onClick={() => setIsDeleteModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                onClick={handleDeleteUser}
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} title="Confirm Deletion">
+        <p>Are you sure you want to delete user: {userToDelete?.name}?</p>
+        <div className="flex justify-end space-x-4 mt-4">
+          <button
+            className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300"
+            onClick={() => setIsDeleteModalOpen(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300"
+            onClick={handleDeleteUser}
+          >
+            Confirm
+          </button>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };
