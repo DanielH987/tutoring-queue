@@ -106,8 +106,15 @@ const Header: React.FC = () => {
 
         {/* Mobile Hamburger Menu */}
         <div className="md:hidden flex items-center">
-          <button onClick={toggleMobileMenu} className="text-white focus:outline-none">
-            {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          <button
+            onClick={toggleMobileMenu}
+            className="text-white focus:outline-none transition-transform duration-300 transform"
+          >
+            {isMobileMenuOpen ? (
+              <FaTimes size={24} className="transition-transform duration-300 transform rotate-90" />
+            ) : (
+              <FaBars size={24} className="transition-transform duration-300 transform rotate-0" />
+            )}
           </button>
         </div>
 
@@ -152,7 +159,7 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <nav className="md:hidden bg-gray-800 text-white">
+        <nav className={`md:hidden custom-bg-color text-white transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-screen' : 'max-h-0'}`}>
           <ul className="flex flex-col items-center space-y-4 p-4">
             <li>
               <Link href="/" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/' ? 'font-bold' : ''}`} onClick={() => { handleClick('/'); toggleMobileMenu(); }}>
