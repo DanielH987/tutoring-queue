@@ -148,7 +148,7 @@ const Queue = () => {
         {requests.length > 0 ? (
           <ul className="space-y-4">
             {requests.map((request) => (
-              <li key={request.id} className="bg-gray-100 p-4 rounded-lg shadow-md relative">
+              <li key={request.id} className="bg-gray-100 p-4 rounded-lg shadow-md relative dark:bg-gray-800">
                 <div className="absolute top-4 right-4">
                   {/* Add the button in the top-right corner */}
                   <button
