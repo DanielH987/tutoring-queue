@@ -76,36 +76,36 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="flex justify-between items-center custom-bg-color text-white px-4 h-20">
-        {/* Logo */}
+      <header className="flex justify-between items-center custom-bg-color text-white px-4 h-20 relative">
+        {/* Left Section: Logo and Navigation */}
         <div className="flex items-center">
           <Link href="/" passHref>
             <h1 className="text-2xl font-bold cursor-pointer">POSC Tutoring Queue</h1>
           </Link>
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-4 ml-10">
+            <Link href="/" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/' ? 'font-bold' : ''}`} onClick={() => handleClick('/')}>
+              Request Help
+            </Link>
+            <Link href="/instructions" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/instructions' ? 'font-bold' : ''}`} onClick={() => handleClick('/instructions')}>
+              Instructions
+            </Link>
+            {status === 'authenticated' && (
+              <Link href="/queue" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/queue' ? 'font-bold' : ''}`} onClick={() => handleClick('/queue')}>
+                Queue
+              </Link>
+            )}
+            {status === 'authenticated' && session?.user?.role === 'admin' && (
+              <Link href="/admin" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/admin' ? 'font-bold' : ''}`} onClick={() => handleClick('/admin')}>
+                Admin Dashboard
+              </Link>
+            )}
+          </nav>
         </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-4">
-          <Link href="/" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/' ? 'font-bold' : ''}`} onClick={() => handleClick('/')}>
-            Request Help
-          </Link>
-          <Link href="/instructions" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/instructions' ? 'font-bold' : ''}`} onClick={() => handleClick('/instructions')}>
-            Instructions
-          </Link>
-          {status === 'authenticated' && (
-            <Link href="/queue" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/queue' ? 'font-bold' : ''}`} onClick={() => handleClick('/queue')}>
-              Queue
-            </Link>
-          )}
-          {status === 'authenticated' && session?.user?.role === 'admin' && (
-            <Link href="/admin" className={`hover:text-gray-300 transition-colors duration-300 ${activeLink === '/admin' ? 'font-bold' : ''}`} onClick={() => handleClick('/admin')}>
-              Admin Dashboard
-            </Link>
-          )}
-        </nav>
-
-        {/* Mobile Hamburger Menu */}
-        <div className="md:hidden flex items-center">
+        {/* Mobile Hamburger Menu (Centered between left and right) */}
+        <div className="md:hidden ml-auto relative">
           <button
             onClick={toggleMobileMenu}
             className="text-white focus:outline-none transition-transform duration-300 transform"
@@ -119,35 +119,22 @@ const Header: React.FC = () => {
         </div>
 
         {/* Profile Icon */}
-        <div
-          className="relative cursor-pointer hover:text-gray-300 transition-all duration-300"
-          ref={profileRef}
-          onClick={toggleProfileMenu}
-        >
+        <div className="ml-auto relative cursor-pointer hover:text-gray-300 transition-all duration-300" ref={profileRef} onClick={toggleProfileMenu}>
           <FaUserCircle size={30} />
           {profileOpen && (
             <div className="absolute top-10 right-0 bg-white text-black rounded-lg shadow-lg p-2 z-50">
               <ul className="list-none p-0 m-0">
                 {session ? (
                   <>
-                    <li
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={handleViewProfile}
-                    >
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleViewProfile}>
                       View Profile
                     </li>
-                    <li
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={handleLogout}
-                    >
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
                       Logout
                     </li>
                   </>
                 ) : (
-                  <li
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={openLoginModal}
-                  >
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={openLoginModal}>
                     Login
                   </li>
                 )}
