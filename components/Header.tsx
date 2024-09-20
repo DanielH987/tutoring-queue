@@ -122,19 +122,19 @@ const Header: React.FC = () => {
         <div className="ml-auto relative cursor-pointer hover:text-gray-300 transition-all duration-300" ref={profileRef} onClick={toggleProfileMenu}>
           <FaUserCircle size={30} />
           {profileOpen && (
-            <div className="absolute top-10 right-0 bg-white text-black rounded-lg shadow-lg p-2 z-50">
+            <div className="absolute top-10 right-0 bg-white text-black rounded-lg shadow-lg p-2 z-50 dark:bg-gray-800 dark:text-white">
               <ul className="list-none p-0 m-0">
                 {session ? (
                   <>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleViewProfile}>
+                    <li className="px-4 py-2 hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer" onClick={handleViewProfile}>
                       View Profile
                     </li>
-                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
+                    <li className="px-4 py-2 hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer" onClick={handleLogout}>
                       Logout
                     </li>
                   </>
                 ) : (
-                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={openLoginModal}>
+                  <li className="px-4 py-2 hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer" onClick={openLoginModal}>
                     Login
                   </li>
                 )}
