@@ -155,10 +155,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       {/* Modal content */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-          <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+          <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative dark:bg-gray-800">
             {/* X Button to close the modal */}
             <button
-              className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black border-none hover:border-2 hover:border-gray-300 hover:rounded-full hover:bg-gray-100 p-2 transition-all duration-300"
+              className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black dark:bg-gray-800 hover:dark:bg-gray-700 border-none hover:border-2 hover:border-gray-300 hover:rounded-full hover:bg-gray-100 p-2 transition-all duration-300"
               onClick={() => {
                 resetForm(); // Reset form when closing via the "X" button
                 onClose();
@@ -179,7 +179,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className={`w-full p-2 border rounded-lg ${nameError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black`}
+                    className={`w-full p-2 border rounded-lg ${nameError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black dark:bg-gray-700`}
                   />
                   {nameError && <p className="text-red-600 text-sm mt-1">This field is required</p>}
                 </div>
@@ -191,7 +191,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full p-2 border rounded-lg ${emailError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black`}
+                  className={`w-full p-2 border rounded-lg ${emailError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black dark:bg-gray-700`}
                 />
                 {emailError && <p className="text-red-600 text-sm mt-1">This field is required</p>}
               </div>
@@ -203,7 +203,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full p-2 border rounded-lg ${passwordError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black`}
+                    className={`w-full p-2 border rounded-lg ${passwordError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black dark:bg-gray-700`}
                   />
                   <div
                     className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
