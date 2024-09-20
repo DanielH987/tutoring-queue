@@ -38,7 +38,6 @@ const RequestPage = () => {
   const fetchQueueData = async () => {
     try {
       const response = await fetch('/api/requests');
-      
       if (response.ok) {
         const data = await response.json();
         setQueueRequests(data); // Store all active requests
@@ -51,7 +50,6 @@ const RequestPage = () => {
     }
   };
 
-  // Initial fetch for queue data and pusher setup
   useEffect(() => {
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
@@ -73,17 +71,11 @@ const RequestPage = () => {
     };
   }, []);
 
-  // Track when queueRequests changes to check if currentRequest still exists
   useEffect(() => {
     const storedRequest = localStorage.getItem('currentRequest');
-  
-    if (storedRequest && !isRequestLoading) { // Ensure requests are loaded
+    if (storedRequest && !isRequestLoading) { 
       const parsedRequest = JSON.parse(storedRequest);
-  
-      const requestExists = queueRequests.some((req) => {
-        return req.id.toString() === parsedRequest.id.toString();
-      });
-  
+      const requestExists = queueRequests.some((req) => req.id.toString() === parsedRequest.id.toString());
       if (!requestExists) {
         localStorage.removeItem('currentRequest');
         setCurrentRequest(null);
@@ -93,53 +85,40 @@ const RequestPage = () => {
     }
   }, [queueRequests, isRequestLoading]);
   
-  // New effect to track current request and remove it when picked up
   useEffect(() => {
     if (!currentRequest) return;
-
-    // Initialize a separate listener for 'request-picked' specific to the current request
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     });
-
     const channel = pusher.subscribe('queue-channel');
 
-    // Listen for the specific request-picked event to remove the current request if it was picked up
     channel.bind('request-picked', async (data: { requestId: string }) => {
       if (currentRequest?.id === data.requestId) {
         setCurrentRequest(null);
         localStorage.removeItem('currentRequest');
         await fetchQueueData();
-
-        // Show modal when request is picked up
         setIsModalOpen(true);
       }
     });
 
-    // Cleanup the listener when `currentRequest` changes or the component unmounts
     return () => {
       channel.unbind('request-picked');
       pusher.unsubscribe('queue-channel');
     };
-  }, [currentRequest]); // This hook runs only when `currentRequest` changes
+  }, [currentRequest]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    // Reset error states
     setNameError(false);
     setCourseError(false);
     setQuestionError(false);
-  
-    // Validation checks
+
     if (name === '') setNameError(true);
     if (course === '') setCourseError(true);
     if (question === '') setQuestionError(true);
-  
+
     if (name && course && question) {
       const newStudent = { name, course, question };
-  
-      // Store request in backend
       const response = await fetch('/api/requests', {
         method: 'POST',
         headers: {
@@ -147,13 +126,10 @@ const RequestPage = () => {
         },
         body: JSON.stringify(newStudent),
       });
-  
+
       const savedRequest = await response.json();
-  
-      // Store the current request in localStorage
       localStorage.setItem('currentRequest', JSON.stringify(savedRequest));
-  
-      // Trigger the Pusher event to update the queue
+
       await fetch('/api/pusher', {
         method: 'POST',
         headers: {
@@ -161,14 +137,11 @@ const RequestPage = () => {
         },
         body: JSON.stringify({
           event: 'update-queue',
-          data: { count: (queueCount ?? 0) + 1 }, // Increment queue count
+          data: { count: (queueCount ?? 0) + 1 },
         }),
       });
-  
-      // Set the current request state
+
       setCurrentRequest(savedRequest);
-  
-      // Clear form fields
       setName('');
       setCourse('');
       setQuestion('');
@@ -184,8 +157,7 @@ const RequestPage = () => {
         },
         body: JSON.stringify({ id: currentRequest.id }),
       });
-  
-      // Trigger the Pusher event to update the queue
+
       await fetch('/api/pusher', {
         method: 'POST',
         headers: {
@@ -193,37 +165,34 @@ const RequestPage = () => {
         },
         body: JSON.stringify({
           event: 'update-queue',
-          data: { count: (queueCount ?? 0) - 1 }, // Decrement queue count
+          data: { count: (queueCount ?? 0) - 1 },
         }),
       });
-  
-      // Clear the current request and remove it from localStorage
+
       setCurrentRequest(null);
       localStorage.removeItem('currentRequest');
     }
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // Close the modal
+    setIsModalOpen(false); 
   };
 
-  // Calculate the current position of the user's request in the queue
   const currentPosition = currentRequest
-    ? queueRequests.findIndex(req => req.id === currentRequest.id) + 1 // Find the index and add 1 (since index starts at 0)
+    ? queueRequests.findIndex(req => req.id === currentRequest.id) + 1
     : null;
 
   return (
-    <div className="p-6 text-left max-w-screen-xl mx-auto mb-20">
+    <div className="p-6 text-left max-w-screen-xl mx-auto mb-20 dark:bg-gray-900 dark:text-white">
       <h1 className="text-4xl font-bold mb-4 mt-4">POSC Tutoring Queue</h1>
 
       <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-        {/* Queue Form or Current Request */}
         {isRequestLoading ? (
-          <div className="bg-white rounded-lg p-6 text-center w-full md:w-2/3">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 text-center w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Loading...</h2>
           </div>
         ) : !currentRequest ? (
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-full md:w-2/3">
+          <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Request Help</h2>
 
             <div className="mb-4">
@@ -233,9 +202,9 @@ const RequestPage = () => {
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={`w-full p-2 border rounded-lg ${nameError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black`}
+                className={`w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white ${nameError ? 'border-red-600 bg-red-100 dark:bg-red-800' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white`}
               />
-              {nameError && <p className="text-red-600 text-sm mt-1">This field is required</p>}
+              {nameError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">This field is required</p>}
             </div>
 
             <div className="mb-4">
@@ -244,7 +213,7 @@ const RequestPage = () => {
                 id="course"
                 value={course}
                 onChange={(e) => setCourse(e.target.value)}
-                className={`w-full p-2 border rounded-lg ${courseError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black`}
+                className={`w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white ${courseError ? 'border-red-600 bg-red-100 dark:bg-red-800' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white`}
               >
                 <option value="" disabled>Select a course</option>
                 {courses.map((courseOption) => (
@@ -253,7 +222,7 @@ const RequestPage = () => {
                   </option>
                 ))}
               </select>
-              {courseError && <p className="text-red-600 text-sm mt-1">This field is required</p>}
+              {courseError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">This field is required</p>}
             </div>
 
             <div className="mb-4">
@@ -262,10 +231,10 @@ const RequestPage = () => {
                 id="question"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                className={`w-full p-2 border rounded-lg ${questionError ? 'border-red-600 bg-red-100' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black`}
+                className={`w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white ${questionError ? 'border-red-600 bg-red-100 dark:bg-red-800' : 'border-gray-300 bg-gray-100'} focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white`}
                 rows={4}
               />
-              {questionError && <p className="text-red-600 text-sm mt-1">This field is required</p>}
+              {questionError && <p className="text-red-600 dark:text-red-400 text-sm mt-1">This field is required</p>}
             </div>
 
             <button type="submit" className="custom-bg-color text-white py-2 px-4 rounded-lg hover:bg-red-900 transition-colors duration-300">
@@ -273,7 +242,7 @@ const RequestPage = () => {
             </button>
           </form>
         ) : (
-          <div className=" p-6 text-left w-full md:w-2/3">
+          <div className="p-6 text-left w-full md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4">Help Requested</h2>
             <Request
               currentPosition={currentPosition}
@@ -293,8 +262,7 @@ const RequestPage = () => {
           </div>
         )}
 
-        {/* Queue Status Box */}
-        <div className="bg-gray-100 rounded-lg shadow-lg p-4 w-full md:w-1/3 text-center">
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-4 w-full md:w-1/3 text-center">
           <h3 className="text-xl font-semibold mb-2">Queue Status</h3>
           {queueCount === null ? (
             <p>Loading...</p>
@@ -304,7 +272,6 @@ const RequestPage = () => {
         </div>
       </div>
 
-      {/* Modal for picked-up request */}
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Request Picked Up">
         <p>Your request has been picked up by a tutor. They will assist you shortly!</p>
       </Modal>
