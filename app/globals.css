@@ -29,3 +29,20 @@ body {
 .custom-bg-color {
   background-color: #9E1B34;
 }
+
+@layer base {
+  /* Base styling for form elements */
+  input, textarea, select, button {
+    @apply bg-white dark:bg-gray-700 text-black dark:text-white border border-gray-300 dark:border-gray-600;
+  }
+
+  /* Add general background and text color handling */
+  body {
+    @apply bg-background text-foreground dark:bg-gray-900 dark:text-white;
+  }
+
+  /* Example for a box or container */
+  .box {
+    @apply bg-white dark:bg-gray-800;
+  }
+}
