@@ -25,7 +25,7 @@ const Request: React.FC<RequestProps> = ({
   return (
     <div
       className={clsx(
-        'rounded-lg p-6 text-left w-full md:w-4/5',
+        'rounded-lg p-6 text-left w-full md:w-4/5 dark:bg-gray-800',
         hasShadow && 'shadow-lg',
         hasBox && 'bg-gray-100'
       )}
