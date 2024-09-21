@@ -3,13 +3,10 @@ const PrivacyPage = () => {
     <div className="p-6 pb-16 text-left max-w-screen-lg mx-auto">
       <h1 className="text-3xl font-bold mb-4 mt-4">Privacy Policy</h1>
       <p className="mb-4">
-        At [YourWebsiteName], accessible from [YourWebsiteURL], one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by [YourWebsiteName] and how we use it.
+        At POSC Tutoring Queue, accessible from https://posc-tutoring-queue.vercel.app/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by POSC Tutoring Queue and how we use it.
       </p>
       <p className="mb-4">
-        If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at [YourContactInfo].
-      </p>
-      <p className="mb-4">
-        This Privacy Policy applies only to our online activities and is only valid for visitors to this website with regards to the information they shared and/or collected in [YourWebsiteName]. This policy does not apply to any information collected offline or via channels other than this website. Our Privacy Policy was created using the Free Privacy Policy Generator.
+        This Privacy Policy applies only to our online activities and is only valid for visitors to this website with regards to the information they shared and/or collected in POSC Tutoring Queue. This policy does not apply to any information collected offline or via channels other than this website. Our Privacy Policy was created using the Free Privacy Policy Generator.
       </p>
 
       <h2 className="text-2xl font-semibold mb-2">Consent</h2>
@@ -42,17 +39,17 @@ const PrivacyPage = () => {
 
       <h2 className="text-2xl font-semibold mb-2">Log Files</h2>
       <p className="mb-4">
-        [YourWebsiteName] follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this as part of hosting services&#39; analytics. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of this information is for analyzing trends, administering the site, tracking users&#39; movements on the website, and gathering demographic information.
+        POSC Tutoring Queue follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this as part of hosting services&#39; analytics. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of this information is for analyzing trends, administering the site, tracking users&#39; movements on the website, and gathering demographic information.
       </p>
 
       <h2 className="text-2xl font-semibold mb-2">Cookies and Web Beacons</h2>
       <p className="mb-4">
-        Like any other website, [YourWebsiteName] uses &#39;cookies&#39;. These cookies are used to store information, including visitors&#39; preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users&#39; experience by customizing our web page content based on visitors&#39; browser type and/or other information.
+        Like any other website, POSC Tutoring Queue uses &#39;cookies&#39;. These cookies are used to store information, including visitors&#39; preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users&#39; experience by customizing our web page content based on visitors&#39; browser type and/or other information.
       </p>
 
       <h2 className="text-2xl font-semibold mb-2">Third-Party Privacy Policies</h2>
       <p className="mb-4">
-        [YourWebsiteName]&#39;s Privacy Policy does not apply to other advertisers or websites. Thus, we advise you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions on how to opt-out of certain options. We also use Google reCaptcha to verify that bots do not submit requests, and their privacy policy applies.
+        POSC Tutoring Queue&#39;s Privacy Policy does not apply to other advertisers or websites. Thus, we advise you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions on how to opt-out of certain options. We also use Google reCaptcha to verify that bots do not submit requests, and their privacy policy applies.
       </p>
 
       <h2 className="text-2xl font-semibold mb-2">CCPA Privacy Rights (Do Not Sell My Personal Information)</h2>
@@ -89,7 +86,7 @@ const PrivacyPage = () => {
         Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
       </p>
       <p className="mb-4">
-        [YourWebsiteName] does not knowingly collect any personally identifiable information from children under the age of 13. If you think your child provided this kind of information on our website, please contact us immediately, and we will do our best to promptly remove such information from our records.
+        POSC Tutoring Queue does not knowingly collect any personally identifiable information from children under the age of 13. If you think your child provided this kind of information on our website, please contact us immediately, and we will do our best to promptly remove such information from our records.
       </p>
     </div>
   );
