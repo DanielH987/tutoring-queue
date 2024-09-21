@@ -15,7 +15,7 @@ export default function TutorRequests({ processedRequests, totalPages, currentPa
       {/* Display Processed Requests in a Table */}
       <table className="min-w-full table-auto bg-white rounded-lg shadow-lg">
         <thead>
-          <tr className="bg-gray-200">
+          <tr className="bg-gray-200 dark:bg-gray-800">
             <th className="px-4 py-2">Student Name</th>
             <th className="px-4 py-2">Course</th>
             <th className="px-4 py-2">Question</th>
@@ -24,7 +24,7 @@ export default function TutorRequests({ processedRequests, totalPages, currentPa
             <th className="px-4 py-2">Processed At</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className='dark:bg-gray-700'>
           {processedRequests.map((request) => (
             <tr key={request.id}>
               <td className="border px-4 py-2">{request.studentName}</td>
