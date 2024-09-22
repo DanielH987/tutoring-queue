@@ -108,7 +108,7 @@ const Header: React.FC = () => {
         <div className="md:hidden ml-auto relative">
           <button
             onClick={toggleMobileMenu}
-            className="custom-bg-color text-white focus:outline-none transition-transform duration-300 transform"
+            className="custom-bg-color text-white focus:outline-none border-none focus:border-none transition-transform duration-300 transform"
           >
             {isMobileMenuOpen ? (
               <FaTimes size={24} className="transition-transform duration-300 transform rotate-90" />
