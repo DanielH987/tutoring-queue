@@ -108,13 +108,25 @@ const Header: React.FC = () => {
         <div className="md:hidden ml-auto relative">
           <button
             onClick={toggleMobileMenu}
-            className="text-white focus:outline-none transition-transform duration-300 transform"
+            className="custom-bg-color text-white focus:outline-none border-none focus:border-none transition-transform duration-300 transform"
           >
-            {isMobileMenuOpen ? (
-              <FaTimes size={24} className="transition-transform duration-300 transform rotate-90" />
-            ) : (
-              <FaBars size={24} className="transition-transform duration-300 transform rotate-0" />
-            )}
+            <div className="relative w-6 h-6">
+              {/* Hamburger Icon */}
+              <FaBars
+                className={`absolute top-0 left-0 transition-opacity duration-300 transform ${
+                  isMobileMenuOpen ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+                }`}
+                size={24}
+              />
+
+              {/* Cross Icon */}
+              <FaTimes
+                className={`absolute top-0 left-0 transition-opacity duration-300 transform ${
+                  isMobileMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                }`}
+                size={24}
+              />
+            </div>
           </button>
         </div>
 
