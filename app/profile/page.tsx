@@ -91,7 +91,7 @@ export default async function TutorProfile({ searchParams }: { searchParams: { p
   const medianHelpTime = calculateMedian(helpTimesInMinutes);
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="p-6 text-left max-w-screen-lg mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Tutor Profile</h1>
 
       {/* Display Tutor Profile Info */}
