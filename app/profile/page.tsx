@@ -142,8 +142,10 @@ export default async function TutorProfile({ searchParams }: { searchParams: { p
         </ul>
       </div>
 
-      {/* Pass data to the client component */}
-      <TutorRequests processedRequests={mappedProcessedRequests} totalPages={totalPages} currentPage={page} />
+      {/* Responsive table */}
+      <div className="overflow-x-auto">
+        <TutorRequests processedRequests={mappedProcessedRequests} totalPages={totalPages} currentPage={page} />
+      </div>
     </div>
   );
 }
