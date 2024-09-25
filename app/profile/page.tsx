@@ -112,7 +112,9 @@ export default async function TutorProfile({ searchParams }: { searchParams: { p
           </li>
           <li className="flex items-center">
             <strong className="w-32 text-gray-600">Member Since:</strong>
-            <span className="text-gray-800">{new Date(tutorProfile?.createdAt).toLocaleDateString()}</span>
+            <span className="text-gray-800">
+              {tutorProfile?.createdAt ? new Date(tutorProfile.createdAt).toLocaleDateString() : 'N/A'}
+            </span>
           </li>
         </ul>
       </div>
