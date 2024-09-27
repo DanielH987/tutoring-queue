@@ -5,7 +5,8 @@ declare module 'next-auth' {
     user: {
       id: string;
       email: string;
-      role: string; // Add the role field here
+      role: string;
     };
+    accessToken?: string;
   }
 }
