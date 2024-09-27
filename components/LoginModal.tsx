@@ -113,23 +113,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setNameError(false);
   
     // Validate fields
-    let valid = true;
     if (!email) {
       setEmailError(true);
-      valid = false;
     }
     if (!password) {
       setPasswordError(true);
-      valid = false;
     }
     if (!isLogin && !name) {
       setNameError(true);
-      valid = false;
-    }
-  
-    // If all fields are valid, proceed with the submission logic
-    if (valid) {
-      console.log('Form submitted');
     }
   };  
   
