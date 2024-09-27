@@ -21,7 +21,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [modalMessage, setModalMessage] = useState('');
 
   const showModal = (message: string) => {
-    console.log('showModal', message);
     setModalMessage(message);
     setIsModalOpen(true);
   };
