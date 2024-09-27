@@ -24,12 +24,24 @@ const AdminApproval = () => {
     // If user is not logged in or not an admin, redirect to the home page
     if (!session || session?.user?.role !== 'admin') {
       router.push('/'); // Client-side redirect
+      return;
     }
 
     // Fetch pending and all users if the user is an admin
     const fetchUsers = async () => {
-      const pendingResponse = await fetch('/api/admin/pending-users');
-      const allUsersResponse = await fetch('/api/admin/all-users');
+      const token = session?.accessToken; // Get the token from the session
+      console.log('session:', session);
+
+      const pendingResponse = await fetch('/api/admin/pending-users', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+        },
+      });
+      const allUsersResponse = await fetch('/api/admin/all-users', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+        },
+      });
       
       const pendingData = await pendingResponse.json();
       const allUsersData = await allUsersResponse.json();
@@ -44,10 +56,13 @@ const AdminApproval = () => {
   }, [session, status, router]);
 
   const handleApproval = async (userId: string , action: string) => {
+    const token = session?.accessToken; // Get the token from the session
+
     await fetch('/api/admin/approve-user', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // Add the token to the Authorization header
       },
       body: JSON.stringify({ userId, action }),
     });
@@ -61,11 +76,13 @@ const AdminApproval = () => {
 
   const handleDeleteUser = async () => {
     if (!userToDelete) return;
-    
+    const token = session?.accessToken; // Get the token from the session
+
     await fetch(`/api/admin/delete-user`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // Add the token to the Authorization header
       },
       body: JSON.stringify({ userId: userToDelete.id }),
     });
@@ -75,10 +92,13 @@ const AdminApproval = () => {
   };
 
   const handleSuspendUser = async (userId: string, action: 'SUSPEND' | 'UNSUSPEND') => {
+    const token = session?.accessToken; // Get the token from the session
+
     await fetch(`/api/admin/suspend-user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // Add the token to the Authorization header
       },
       body: JSON.stringify({ userId, action }),
     });
@@ -89,10 +109,13 @@ const AdminApproval = () => {
   };
 
   const handleChangeRole = async (userId: string, newRole: string) => {
+    const token = session?.accessToken; // Get the token from the session
+
     await fetch(`/api/admin/change-role`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // Add the token to the Authorization header
       },
       body: JSON.stringify({ userId, role: newRole }),
     });
@@ -104,7 +127,13 @@ const AdminApproval = () => {
 
   const refreshPendingUsers = async () => {
     setIsPendingUsersLoading(true); // Start spinning animation
-    const pendingResponse = await fetch('/api/admin/pending-users');
+    const token = session?.accessToken; // Get the token from the session
+
+    const pendingResponse = await fetch('/api/admin/pending-users', {
+      headers: {
+        Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+      },
+    });
     const pendingData = await pendingResponse.json();
     setPendingUsers(pendingData);
     setIsPendingUsersLoading(false); // Stop spinning animation
@@ -112,7 +141,13 @@ const AdminApproval = () => {
 
   const refreshAllUsers = async () => {
     setIsAllUsersLoading(true); // Start spinning animation
-    const allUsersResponse = await fetch('/api/admin/all-users');
+    const token = session?.accessToken; // Get the token from the session
+
+    const allUsersResponse = await fetch('/api/admin/all-users', {
+      headers: {
+        Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+      },
+    });
     const allUsersData = await allUsersResponse.json();
     setAllUsers(allUsersData);
     setIsAllUsersLoading(false); // Stop spinning animation
