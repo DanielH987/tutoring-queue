@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import { compare } from 'bcrypt';
 import { UserType } from '@/app/types';
+import jwt from 'jsonwebtoken'; // Import jwt from jsonwebtoken
 
 const prisma = new PrismaClient();
 
@@ -53,24 +54,35 @@ export const authOptions = {
     signIn: '/auth/signin',
   },
   session: {
-    strategy: 'jwt' as const, // Make sure TypeScript treats this as a literal type
+    strategy: 'jwt' as const, // Ensure JWT strategy
   },
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
+      // Add the accessToken to the session object
       session.user.id = token.sub ?? '';
       session.user.email = token.email ?? '';
       session.user.role = token.role as string;
+      session.accessToken = token.accessToken as string;
       return session;
     },
-    async jwt({ token, user, account }: { token: JWT; user?: UserType | any; account?: any }) {
-      // Check if `user` is available and if it has the necessary fields
-      if (user && 'id' in user && 'email' in user && 'role' in user) {
-        token.sub = user.id;
+    async jwt({ token, user }: { token: JWT; user?: UserType | any }) {
+      // Log the user object when it's available (during login)
+      if (user) {
+    
+        // Set user info on the token
+        token.id = user.id;
         token.email = user.email;
         token.role = user.role;
+    
+        // Generate and set the accessToken
+        token.accessToken = jwt.sign(
+          { userId: user.id, role: user.role },
+          process.env.NEXTAUTH_SECRET!,
+          { expiresIn: '1h' }
+        );
       }
       return token;
-    },
+    },    
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, // Set secret for JWT
 };
